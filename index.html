@@ -5,32 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Digital Mind</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 
 :root {
-  --bg:      #0a0a0a;
-  --bg2:     #111111;
-  --bg3:     #1a1a1a;
-  --bg4:     #222222;
-  --border:  #2a2a2a;
-  --border2: #3a3a3a;
-  --border3: #555555;
-  --accent:  #ffffff;
-  --accent2: #cccccc;
-  --accent3: #888888;
-  --text:    #f0f0f0;
-  --text2:   #999999;
-  --text3:   #555555;
-  --folder:  #ffffff;
-  --pdf:     #dddddd;
-  --img:     #bbbbbb;
-  --doc:     #eeeeee;
-  --ppt:     #cccccc;
-  --xls:     #aaaaaa;
-  --other:   #888888;
-  --ctrl-h:  58px;
+  --bg: #080820;
+  --bg2: #0e0e28;
+  --bg3: #141432;
+  --border: #252560;
+  --border2: #353580;
+  --accent: #55ccff;
+  --accent2: #bb66ff;
+  --accent3: #55ffaa;
+  --text: #e8f0ff;
+  --text2: #99aacc;
+  --text3: #5566aa;
+  --folder: #ffdd88;
+  --pdf: #ff7766;
+  --img: #dd77ee;
+  --doc: #77bbff;
+  --ppt: #ffaa66;
+  --xls: #66ffaa;
+  --other: #aabbcc;
+  --ctrl-h: 56px;
   --sidebar-w: 280px;
-  --font: 'Arial Rounded MT Bold', 'Nunito', 'Arial', sans-serif;
+  --font-main: 'Arial Rounded MT Bold', 'Arial Unicode MS', 'Trebuchet MS', Arial, sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --font-title: 'Orbitron', monospace;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,289 +38,543 @@
 html, body {
   width: 100%; height: 100%; overflow: hidden;
   background: var(--bg); color: var(--text);
-  font-family: var(--font);
+  font-family: var(--font-main);
 }
 
+/* ── LAYOUT ── */
 #app { display: flex; flex-direction: column; width: 100vw; height: 100vh; }
 
-/* ── TOPBAR ── */
 #topbar {
-  height: 46px; min-height: 46px;
+  height: 44px; min-height: 44px;
   background: var(--bg2);
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; gap: 0;
-  padding: 0 14px; z-index: 30; flex-shrink: 0;
+  padding: 0 12px;
+  z-index: 30; flex-shrink: 0;
 }
+
 #logo {
-  font-family: var(--font);
-  font-weight: 900; font-size: 14px;
-  color: var(--accent); letter-spacing: 3px;
-  margin-right: 16px; white-space: nowrap;
+  font-family: 'Orbitron', monospace;
+  font-weight: 900; font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  margin-right: 16px;
+  white-space: nowrap;
+  text-shadow: 0 0 20px var(--accent);
 }
-#breadcrumb { display: flex; align-items: center; gap: 4px; flex: 1; overflow: hidden; }
+
+#breadcrumb {
+  display: flex; align-items: center; gap: 4px;
+  flex: 1; overflow: hidden;
+}
 .bc-item {
-  font-size: 11px; color: var(--accent2); cursor: pointer;
-  padding: 3px 8px; border-radius: 3px; border: 1px solid transparent;
-  white-space: nowrap; transition: all 0.15s; font-family: var(--font);
+  font-size: 11px; color: var(--accent); cursor: pointer;
+  padding: 3px 8px; border-radius: 3px;
+  border: 1px solid transparent;
+  white-space: nowrap; transition: all 0.15s;
 }
 .bc-item:hover { border-color: var(--border2); background: var(--bg3); }
-.bc-item.active { color: var(--accent); }
+.bc-item.active { color: var(--text); }
 .bc-sep { color: var(--text3); font-size: 11px; }
-#topbar-actions { display: flex; align-items: center; gap: 8px; margin-left: 8px; }
-.tb-btn {
-  font-family: var(--font); font-size: 10px; padding: 4px 10px;
-  border: 1px solid var(--border2); background: transparent; color: var(--text2);
-  border-radius: 3px; cursor: pointer; transition: all 0.15s; white-space: nowrap;
-}
-.tb-btn:hover { border-color: var(--accent3); color: var(--accent); }
-.tb-btn.active { border-color: var(--border3); color: var(--accent); background: var(--bg3); }
 
-/* ── MAIN ── */
+#topbar-actions {
+  display: flex; align-items: center; gap: 8px; margin-left: 8px;
+}
+.tb-btn {
+  font-family: var(--font-main);
+  font-size: 10px; padding: 4px 10px;
+  border: 1px solid var(--border2);
+  background: transparent; color: var(--text2);
+  border-radius: 3px; cursor: pointer; transition: all 0.15s;
+  white-space: nowrap;
+}
+.tb-btn:hover { border-color: var(--accent); color: var(--accent); }
+.tb-btn.primary { border-color: var(--accent3); color: var(--accent3); }
+.tb-btn.primary:hover { background: #0d2a1a; }
+
+/* ── MAIN AREA ── */
 #main { display: flex; flex: 1; overflow: hidden; }
 
 /* ── SIDEBAR ── */
 #sidebar {
   width: var(--sidebar-w); min-width: var(--sidebar-w);
-  background: var(--bg2); border-right: 1px solid var(--border);
-  display: flex; flex-direction: column; overflow: hidden;
-  transition: width 0.25s, min-width 0.25s; z-index: 20;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow: hidden; transition: width 0.25s, min-width 0.25s;
+  z-index: 20;
 }
 #sidebar.collapsed { width: 0; min-width: 0; }
+
 #sidebar-header {
-  padding: 10px 12px 8px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 #sidebar-title {
-  font-family: var(--font); font-size: 9px; letter-spacing: 2px;
-  color: var(--text3); text-transform: uppercase; margin-bottom: 8px;
+  font-family: 'Orbitron', monospace;
+  font-size: 9px; letter-spacing: 2px;
+  color: var(--text3); text-transform: uppercase;
+  margin-bottom: 8px;
 }
-#sidebar-stats { display: flex; gap: 6px; flex-wrap: wrap; }
+#sidebar-stats {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
 .stat-pill {
-  font-size: 10px; color: var(--text2); background: var(--bg3);
-  border: 1px solid var(--border); border-radius: 20px; padding: 2px 8px;
-  font-family: var(--font);
+  font-size: 10px; color: var(--text2);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 2px 8px;
 }
-.stat-pill b { color: var(--accent); }
-#sidebar-search { padding: 8px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.stat-pill b { color: var(--text); }
+
+#sidebar-search {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
 #search-input {
-  width: 100%; background: var(--bg3); border: 1px solid var(--border);
-  color: var(--text); font-family: var(--font); font-size: 11px;
-  padding: 5px 8px; border-radius: 3px; outline: none;
+  width: 100%; background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-main);
+  font-size: 11px; padding: 5px 8px;
+  border-radius: 3px; outline: none;
 }
-#search-input:focus { border-color: var(--border3); }
+#search-input:focus { border-color: var(--border2); }
 #search-input::placeholder { color: var(--text3); }
+
 #file-tree { flex: 1; overflow-y: auto; padding: 8px 0; }
-#file-tree::-webkit-scrollbar { width: 3px; }
+#file-tree::-webkit-scrollbar { width: 4px; }
 #file-tree::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
 .tree-folder, .tree-file {
-  display: flex; align-items: center; gap: 6px; padding: 5px 12px;
-  cursor: pointer; font-size: 11px; color: var(--text2); transition: background 0.1s;
-  border-left: 2px solid transparent; font-family: var(--font);
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 12px; cursor: pointer;
+  font-size: 11px; color: var(--text2);
+  transition: background 0.1s;
+  border-left: 2px solid transparent;
 }
 .tree-folder:hover, .tree-file:hover { background: var(--bg3); color: var(--text); }
-.tree-folder.open { color: var(--accent); }
-.tree-file.active { border-left-color: var(--accent3); background: var(--bg3); color: var(--text); }
+.tree-folder.open { color: var(--folder); }
+.tree-file.active { border-left-color: var(--accent); background: var(--bg3); color: var(--text); }
 .tree-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .tree-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
 .tree-size { font-size: 9px; color: var(--text3); flex-shrink: 0; }
+.tree-children { padding-left: 14px; }
 
-/* ── BRAIN ── */
-#brain-area { flex: 1; position: relative; overflow: hidden; background: var(--bg); }
+/* ── BRAIN CANVAS AREA ── */
+#brain-area {
+  flex: 1; position: relative; overflow: hidden;
+  background: var(--bg);
+}
 #brain-canvas { display: block; width: 100%; height: 100%; }
+
+/* hover preview */
 .float-prev {
   position: absolute; pointer-events: none; z-index: 40;
   display: none; flex-direction: column;
-  background: #111111ee; backdrop-filter: blur(8px);
-  border: 1px solid var(--border2); border-radius: 8px; overflow: hidden; width: 200px;
+  background: #0d1525cc; backdrop-filter: blur(10px);
+  border: 1px solid var(--border2);
+  border-radius: 8px; overflow: hidden; width: 200px;
 }
-.fp-media { width: 200px; height: 140px; object-fit: cover; display: block; background: var(--bg3); }
-.fp-info { padding: 6px 10px; background: #0a0a0aee; }
-.fp-name { font-size: 10px; color: var(--accent); word-break: break-all; line-height: 1.4; font-family: var(--font); }
-.fp-sub { font-size: 9px; color: var(--text3); margin-top: 2px; font-family: var(--font); }
-
-/* ── GRID OVERLAY ── */
-#grid-overlay {
-  display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  background: var(--bg2); z-index: 10; flex-direction: column; overflow: hidden;
-}
-#grid-overlay.open { display: flex; }
-#grid-header {
-  padding: 12px 16px; border-bottom: 1px solid var(--border);
-  font-family: var(--font); font-size: 10px; letter-spacing: 2px;
-  color: var(--text3); display: flex; align-items: center; justify-content: space-between;
-}
-#grid-inner {
-  flex: 1; overflow-y: auto; padding: 16px;
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 10px; align-content: start;
-}
-#grid-inner::-webkit-scrollbar { width: 4px; }
-#grid-inner::-webkit-scrollbar-thumb { background: var(--border2); }
-.g-card {
-  border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer;
-  transition: all 0.15s; display: flex; flex-direction: column; gap: 8px; background: var(--bg3);
-}
-.g-card:hover { border-color: var(--border3); background: var(--bg4); transform: translateY(-1px); }
-.g-icon {
-  width: 36px; height: 36px; border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: bold; font-family: var(--font);
-}
-.g-name { font-size: 11px; color: var(--text); word-break: break-word; line-height: 1.3; font-family: var(--font); }
-.g-meta { font-size: 10px; color: var(--text3); font-family: var(--font); }
-.g-thumb { width: 100%; height: 70px; object-fit: cover; border-radius: 4px; }
-.g-actions { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
-.g-btn {
-  font-family: var(--font); font-size: 9px; padding: 2px 7px;
-  border: 1px solid var(--border); background: transparent;
-  color: var(--text3); border-radius: 3px; cursor: pointer;
-}
-.g-btn:hover { border-color: var(--border3); color: var(--text2); }
-.g-btn.open-btn { border-color: var(--border2); color: var(--accent2); }
-.g-empty { font-size: 13px; color: var(--text3); text-align: center; padding: 3rem; grid-column: 1/-1; font-family: var(--font); }
+.fp-media { width: 200px; height: 140px; object-fit: cover; display: block; }
+.fp-info { padding: 6px 10px; background: #08101ccc; }
+.fp-name { font-size: 10px; color: var(--text); word-break: break-all; line-height: 1.4; }
+.fp-sub { font-size: 9px; color: var(--text3); margin-top: 2px; }
 
 /* ── BOTTOM CONTROLS ── */
 #controls {
   height: var(--ctrl-h); min-height: var(--ctrl-h);
-  background: var(--bg2); border-top: 1px solid var(--border);
-  display: flex; align-items: center; padding: 0 16px;
-  gap: 8px; z-index: 30; flex-shrink: 0; overflow-x: auto;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 16px; gap: 8px;
+  z-index: 30; flex-shrink: 0;
+  overflow-x: auto;
 }
 #controls::-webkit-scrollbar { display: none; }
+
 .ctrl-group {
   display: flex; align-items: center; gap: 6px;
-  border-right: 1px solid var(--border); padding-right: 12px; margin-right: 4px; flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding-right: 12px; margin-right: 4px;
+  flex-shrink: 0;
 }
 .ctrl-group:last-child { border-right: none; }
+
 .ctrl-label {
-  font-size: 8px; letter-spacing: 1px; color: var(--text3);
-  text-transform: uppercase; font-family: var(--font); white-space: nowrap;
+  font-size: 8px; letter-spacing: 1px;
+  color: var(--text3); text-transform: uppercase;
+  font-family: 'Orbitron', monospace;
+  white-space: nowrap;
 }
+
 .ctrl-btn {
-  width: 34px; height: 34px; background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 6px; cursor: pointer; display: flex; align-items: center;
-  justify-content: center; color: var(--text2); font-size: 14px;
-  transition: all 0.15s; flex-shrink: 0; font-family: var(--font);
+  width: 34px; height: 34px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 6px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text2); font-size: 14px;
+  transition: all 0.15s; flex-shrink: 0;
 }
-.ctrl-btn:hover { border-color: var(--border3); color: var(--accent); background: var(--bg4); }
-.ctrl-btn.active { border-color: var(--border3); color: var(--accent); background: var(--bg3); }
-.ctrl-btn.danger:hover { color: #ff6666; border-color: #ff6666; }
+.ctrl-btn:hover { border-color: var(--accent); color: var(--accent); background: #0a1a2a; }
+.ctrl-btn.active { border-color: var(--accent); color: var(--accent); background: #0a1a2a; }
+.ctrl-btn.danger:hover { border-color: var(--pdf); color: var(--pdf); }
+.ctrl-btn.success { border-color: var(--accent3); color: var(--accent3); }
+
+.ctrl-slider-wrap {
+  display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+}
 .ctrl-slider {
   -webkit-appearance: none; width: 80px; height: 3px;
   background: var(--border2); border-radius: 2px; outline: none; cursor: pointer;
 }
 .ctrl-slider::-webkit-slider-thumb {
   -webkit-appearance: none; width: 12px; height: 12px;
-  border-radius: 50%; background: var(--accent3); cursor: pointer;
+  border-radius: 50%; background: var(--accent); cursor: pointer;
+  box-shadow: 0 0 6px var(--accent);
 }
+
 #upload-btn-main {
-  font-family: var(--font); font-size: 10px; letter-spacing: 1px;
-  padding: 7px 14px; height: 34px; border: 1px solid var(--border3);
-  background: var(--bg3); color: var(--accent); border-radius: 6px;
-  cursor: pointer; white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
+  font-family: 'Orbitron', monospace;
+  font-size: 9px; letter-spacing: 1px;
+  padding: 7px 14px; height: 34px;
+  border: 1px solid var(--accent3);
+  background: #0a1f14; color: var(--accent3);
+  border-radius: 6px; cursor: pointer;
+  white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
 }
-#upload-btn-main:hover { background: var(--bg4); border-color: var(--accent); }
+#upload-btn-main:hover { background: #122a1c; box-shadow: 0 0 12px #4fa4; }
+
 #filter-type {
-  font-family: var(--font); font-size: 10px; background: var(--bg3);
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; background: var(--bg3);
   border: 1px solid var(--border); color: var(--text2);
-  padding: 4px 6px; border-radius: 4px; outline: none; cursor: pointer;
+  padding: 4px 6px; border-radius: 4px;
+  outline: none; cursor: pointer;
 }
-#node-count-display { font-family: var(--font); font-size: 9px; color: var(--text3); white-space: nowrap; }
-#save-status {
-  font-family: var(--font); font-size: 9px; color: var(--text3);
-  white-space: nowrap; transition: color 0.3s;
+
+#node-count-display {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px; color: var(--text3);
+  white-space: nowrap;
 }
-#save-status.saving { color: var(--accent2); }
-#save-status.saved { color: #77cc77; }
+
 #file-input { display: none; }
 
-/* ── VIEWER ── */
+/* ── VIEWER OVERLAY ── */
 #viewer {
-  display: none; position: fixed; top: 0; left: 0;
-  width: 100vw; height: 100vh; z-index: 100;
-  background: #000000bb; align-items: center; justify-content: center;
+  display: none; position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: 100; background: #000000bb;
+  align-items: center; justify-content: center;
 }
 #viewer.open { display: flex; }
+
 #viewer-box {
-  background: var(--bg2); border: 1px solid var(--border2); border-radius: 10px;
-  width: 85vw; height: 88vh; display: flex; flex-direction: column; overflow: hidden;
-  box-shadow: 0 0 60px #000a, 0 0 120px #0006;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  width: 85vw; height: 88vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 0 60px #0008, 0 0 120px #0006;
 }
+
 #viewer-tabs {
-  display: flex; align-items: center; background: var(--bg);
-  border-bottom: 1px solid var(--border); min-height: 38px; overflow-x: auto; flex-shrink: 0;
+  display: flex; align-items: center;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  min-height: 38px; overflow-x: auto; flex-shrink: 0;
 }
 #viewer-tabs::-webkit-scrollbar { display: none; }
+
 #vtab-back {
-  display: flex; align-items: center; gap: 6px; padding: 0 14px; height: 38px;
-  background: transparent; border: none; border-right: 1px solid var(--border);
-  color: var(--text2); font-family: var(--font); font-size: 11px;
-  cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all 0.15s;
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 14px; height: 38px;
+  background: transparent; border: none;
+  border-right: 1px solid var(--border);
+  color: var(--text2); font-family: var(--font-main);
+  font-size: 11px; cursor: pointer; white-space: nowrap;
+  flex-shrink: 0; transition: all 0.15s;
 }
 #vtab-back:hover { color: var(--text); background: var(--bg2); }
+
 .vtab {
-  display: flex; align-items: center; gap: 7px; padding: 0 14px; height: 38px;
-  font-size: 11px; color: var(--text2); border-right: 1px solid var(--border);
-  cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: background 0.15s;
-  font-family: var(--font);
+  display: flex; align-items: center; gap: 7px;
+  padding: 0 14px; height: 38px;
+  font-size: 11px; color: var(--text2);
+  border-right: 1px solid var(--border);
+  cursor: pointer; white-space: nowrap;
+  flex-shrink: 0; transition: background 0.15s;
+  font-family: var(--font-main);
 }
 .vtab:hover { background: var(--bg2); }
 .vtab.active { background: var(--bg2); color: var(--text); }
 .vtab-dot { width: 7px; height: 7px; border-radius: 50%; }
 .vtab-name { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
 .vtab-x { color: var(--text3); margin-left: 4px; font-size: 12px; line-height: 1; }
-.vtab-x:hover { color: #ff6666; }
+.vtab-x:hover { color: var(--pdf); }
+
 #viewer-content {
-  flex: 1; overflow: hidden; display: flex;
-  align-items: center; justify-content: center; background: #0d0d0d; position: relative;
+  flex: 1; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: #111122; position: relative;
 }
 #viewer-iframe { width: 100%; height: 100%; border: none; display: none; }
 #viewer-img-el { max-width: 100%; max-height: 100%; object-fit: contain; display: none; }
-#viewer-docx { display: none; width: 100%; height: 100%; overflow: auto; background: #f5f5f5; }
-#viewer-xlsx { display: none; width: 100%; height: 100%; overflow: auto; background: #111; }
 #viewer-msg {
   display: none; flex-direction: column;
-  align-items: center; gap: 14px; padding: 3rem; text-align: center;
+  align-items: center; gap: 14px; padding: 3rem;
+  text-align: center;
 }
 #viewer-msg-icon { font-size: 48px; }
-#viewer-msg-text { font-size: 13px; color: var(--text2); line-height: 1.6; font-family: var(--font); }
-#viewer-footer {
-  display: flex; align-items: center; gap: 10px; padding: 8px 14px;
-  background: var(--bg); border-top: 1px solid var(--border); flex-shrink: 0;
-}
-#viewer-fname { flex: 1; font-size: 11px; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font); }
-.vf-btn {
-  font-family: var(--font); font-size: 10px; padding: 5px 12px; border-radius: 4px;
-  border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; transition: all 0.15s;
-}
-.vf-btn:hover { border-color: var(--border3); color: var(--accent); }
-.vf-btn.dl { border-color: var(--border3); color: var(--accent); }
-.vf-btn.dl:hover { background: var(--bg4); }
+#viewer-msg-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
 
-/* ── TOAST ── */
-#toast {
-  position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%);
-  background: var(--bg3); border: 1px solid var(--border2); color: var(--accent2);
-  font-family: var(--font); font-size: 11px; padding: 8px 18px; border-radius: 20px;
-  z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+#viewer-footer {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px; background: var(--bg);
+  border-top: 1px solid var(--border); flex-shrink: 0;
 }
-#toast.show { opacity: 1; }
+#viewer-fname { flex: 1; font-size: 11px; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vf-btn {
+  font-family: var(--font-main);
+  font-size: 10px; padding: 5px 12px;
+  border-radius: 4px; border: 1px solid var(--border2);
+  background: transparent; color: var(--text2);
+  cursor: pointer; transition: all 0.15s;
+}
+.vf-btn:hover { border-color: var(--accent); color: var(--accent); }
+.vf-btn.dl { border-color: var(--accent3); color: var(--accent3); }
+.vf-btn.dl:hover { background: #0a1f14; }
+
+/* ── SCAN LINE EFFECT ── */
+#brain-area::after {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  pointer-events: none; z-index: 1;
+}
+
+/* ── GRID VIEW OVERLAY ── */
+#grid-overlay {
+  display: none; position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--bg2); z-index: 10;
+  flex-direction: column; overflow: hidden;
+}
+#grid-overlay.open { display: flex; }
+#grid-header {
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  letter-spacing: 2px; color: var(--text3);
+  display: flex; align-items: center; justify-content: space-between;
+}
+#grid-inner {
+  flex: 1; overflow-y: auto; padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px; align-content: start;
+}
+#grid-inner::-webkit-scrollbar { width: 4px; }
+#grid-inner::-webkit-scrollbar-thumb { background: var(--border2); }
+
+.g-card {
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px;
+  cursor: pointer; transition: all 0.15s;
+  display: flex; flex-direction: column; gap: 8px;
+  background: var(--bg3);
+}
+.g-card:hover { border-color: var(--border2); background: #0f0f25; transform: translateY(-1px); }
+.g-icon {
+  width: 36px; height: 36px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: bold;
+}
+.g-name { font-size: 11px; color: var(--text); word-break: break-word; line-height: 1.3; }
+.g-meta { font-size: 10px; color: var(--text3); }
+.g-thumb { width: 100%; height: 70px; object-fit: cover; border-radius: 4px; }
+.g-actions { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
+.g-btn {
+  font-family: var(--font-main);
+  font-size: 9px; padding: 2px 7px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text3); border-radius: 3px; cursor: pointer;
+}
+.g-btn:hover { border-color: var(--border2); color: var(--text2); }
+.g-btn.open-btn { border-color: var(--accent)44; color: var(--accent); }
+.g-empty { font-size: 13px; color: var(--text3); text-align: center; padding: 3rem; grid-column: 1/-1; }
+
+/* ── PULSE RING ON BRAIN ── */
+@keyframes pulseRing {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* ── AUTH OVERLAY ── */
+#auth-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #04040e;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+}
+#auth-overlay.hidden { display: none; }
+
+#auth-box {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 40px 44px;
+  width: 380px;
+  box-shadow: 0 0 80px #0008, 0 0 40px #55ccff18;
+  display: flex; flex-direction: column; gap: 20px;
+}
+#auth-logo {
+  font-family: var(--font-title);
+  font-size: 18px; font-weight: 900;
+  color: var(--accent);
+  letter-spacing: 3px;
+  text-align: center;
+  text-shadow: 0 0 24px var(--accent);
+  margin-bottom: 4px;
+}
+#auth-subtitle {
+  font-size: 11px; color: var(--text3);
+  text-align: center; letter-spacing: 1px;
+  font-family: var(--font-main);
+  margin-top: -12px;
+}
+#auth-tabs {
+  display: flex; gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px; overflow: hidden;
+}
+.auth-tab {
+  flex: 1; padding: 8px;
+  background: transparent; border: none;
+  font-family: var(--font-main); font-size: 11px;
+  color: var(--text3); cursor: pointer;
+  transition: all 0.15s;
+}
+.auth-tab.active { background: var(--bg3); color: var(--accent); }
+.auth-field {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.auth-field label {
+  font-size: 10px; color: var(--text3);
+  letter-spacing: 1px; font-family: var(--font-title);
+  text-transform: uppercase;
+}
+.auth-field input {
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-main);
+  font-size: 13px; padding: 10px 12px;
+  border-radius: 6px; outline: none;
+  transition: border-color 0.15s;
+}
+.auth-field input:focus { border-color: var(--accent); }
+#auth-submit {
+  width: 100%; padding: 12px;
+  background: linear-gradient(135deg, #0a2040, #0a3020);
+  border: 1px solid var(--accent);
+  color: var(--accent); font-family: var(--font-main);
+  font-size: 13px; border-radius: 6px;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 0 18px #55ccff22;
+}
+#auth-submit:hover { background: linear-gradient(135deg, #0d2850, #0d3828); box-shadow: 0 0 28px #55ccff44; }
+#auth-error {
+  font-size: 11px; color: var(--pdf);
+  text-align: center; min-height: 16px;
+  font-family: var(--font-main);
+}
+#auth-info {
+  font-size: 10px; color: var(--text3);
+  text-align: center; line-height: 1.6;
+  font-family: var(--font-main);
+}
+.user-badge {
+  font-family: var(--font-main);
+  font-size: 10px; color: var(--accent3);
+  padding: 3px 10px; border: 1px solid var(--accent3);
+  border-radius: 20px; white-space: nowrap;
+}
+#btn-logout {
+  font-family: var(--font-main);
+  font-size: 10px; padding: 4px 10px;
+  border: 1px solid var(--border2);
+  background: transparent; color: var(--text3);
+  border-radius: 3px; cursor: pointer;
+  transition: all 0.15s;
+}
+#btn-logout:hover { border-color: var(--pdf); color: var(--pdf); }
+
+/* ── SAVE STATUS ── */
+#save-status {
+  font-size: 9px; color: var(--text3);
+  font-family: var(--font-main);
+  padding: 3px 8px; border-radius: 3px;
+  border: 1px solid transparent;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+#save-status.saving { color: var(--accent); border-color: var(--border2); }
+#save-status.saved { color: var(--accent3); border-color: var(--border2); }
+#save-status.error { color: var(--pdf); border-color: var(--border2); }
 </style>
 </head>
 <body>
+
+<!-- AUTH OVERLAY -->
+<div id="auth-overlay">
+  <div id="auth-box">
+    <div id="auth-logo">⬡ DIGITAL MIND</div>
+    <div id="auth-subtitle">SECURE LOCAL VAULT</div>
+    <div id="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</button>
+    </div>
+    <div class="auth-field">
+      <label>Username</label>
+      <input type="text" id="auth-username" placeholder="enter username" autocomplete="username">
+    </div>
+    <div class="auth-field">
+      <label>Password</label>
+      <input type="password" id="auth-password" placeholder="enter password" autocomplete="current-password">
+    </div>
+    <div class="auth-field" id="auth-confirm-wrap" style="display:none">
+      <label>Confirm Password</label>
+      <input type="password" id="auth-confirm" placeholder="re-enter password" autocomplete="new-password">
+    </div>
+    <button id="auth-submit" onclick="handleAuth()">SIGN IN</button>
+    <div id="auth-error"></div>
+    <div id="auth-info">Data is stored locally on this device only.<br>Each username has a private isolated vault.</div>
+  </div>
+</div>
+
 <div id="app">
 
+  <!-- TOP BAR -->
   <div id="topbar">
     <div id="logo">⬡ DIGITAL MIND</div>
     <div id="breadcrumb">
       <span class="bc-item active" onclick="navTo(null)">root</span>
     </div>
     <div id="topbar-actions">
-      <button class="tb-btn" onclick="toggleSidebar()" id="btn-sidebar-top">≡ files</button>
+      <span id="save-status"></span>
+      <span class="user-badge" id="user-badge" style="display:none"></span>
+      <button class="tb-btn" onclick="toggleSidebar()">≡ files</button>
       <button class="tb-btn" onclick="toggleGridView()">⊞ grid</button>
+      <button id="btn-logout" style="display:none" onclick="logout()">sign out</button>
     </div>
   </div>
 
+  <!-- MAIN -->
   <div id="main">
+
+    <!-- SIDEBAR -->
     <div id="sidebar">
       <div id="sidebar-header">
         <div id="sidebar-title">File Index</div>
@@ -336,8 +590,11 @@ html, body {
       <div id="file-tree"></div>
     </div>
 
+    <!-- BRAIN -->
     <div id="brain-area">
       <canvas id="brain-canvas"></canvas>
+
+      <!-- hover preview -->
       <div class="float-prev" id="canvas-prev">
         <img class="fp-media" id="cp-img" src="" alt="">
         <div class="fp-info">
@@ -345,39 +602,50 @@ html, body {
           <div class="fp-sub" id="cp-sub"></div>
         </div>
       </div>
+
+      <!-- GRID OVERLAY -->
       <div id="grid-overlay">
         <div id="grid-header">
           <span id="grid-title">current folder</span>
-          <button class="tb-btn" onclick="toggleGridView()">✕ close</button>
+          <button class="tb-btn" onclick="toggleGridView()">✕ close grid</button>
         </div>
         <div id="grid-inner"></div>
       </div>
     </div>
   </div>
 
+  <!-- BOTTOM CONTROLS -->
   <div id="controls">
+
     <div class="ctrl-group">
       <button id="upload-btn-main" onclick="document.getElementById('file-input').click()">⬆ UPLOAD FOLDER</button>
       <input type="file" id="file-input" multiple webkitdirectory>
     </div>
+
     <div class="ctrl-group">
-      <span class="ctrl-label">Nav</span>
-      <button class="ctrl-btn" title="Back" onclick="goBack()">←</button>
+      <span class="ctrl-label">Navigate</span>
+      <button class="ctrl-btn" title="Go back" onclick="goBack()">←</button>
       <button class="ctrl-btn" title="Root" onclick="navTo(null)">⌂</button>
-      <button class="ctrl-btn active" title="Sidebar" onclick="toggleSidebar()" id="btn-sidebar">≡</button>
-      <button class="ctrl-btn" title="Grid" onclick="toggleGridView()" id="btn-grid">⊞</button>
+      <button class="ctrl-btn" title="Toggle sidebar" onclick="toggleSidebar()" id="btn-sidebar">≡</button>
+      <button class="ctrl-btn" title="Grid view" onclick="toggleGridView()" id="btn-grid">⊞</button>
     </div>
+
     <div class="ctrl-group">
       <span class="ctrl-label">Brain</span>
       <button class="ctrl-btn" title="Zoom in" onclick="zoomBrain(1.2)">+</button>
       <button class="ctrl-btn" title="Zoom out" onclick="zoomBrain(0.8)">−</button>
-      <button class="ctrl-btn" title="Reset" onclick="resetZoom()">⟳</button>
-      <button class="ctrl-btn" title="Pulse all" onclick="pulseAll()">✦</button>
+      <button class="ctrl-btn" title="Reset zoom" onclick="resetZoom()">⟳</button>
     </div>
+
     <div class="ctrl-group">
       <span class="ctrl-label">Speed</span>
-      <input type="range" class="ctrl-slider" id="speed-slider" min="0" max="3" step="0.1" value="1">
+      <div class="ctrl-slider-wrap">
+        <span style="font-size:10px;color:var(--text3)">⏸</span>
+        <input type="range" class="ctrl-slider" id="speed-slider" min="0" max="3" step="0.1" value="1">
+        <span style="font-size:10px;color:var(--text3)">⏩</span>
+      </div>
     </div>
+
     <div class="ctrl-group">
       <span class="ctrl-label">Filter</span>
       <select id="filter-type" onchange="setFilter(this.value)">
@@ -391,18 +659,21 @@ html, body {
         <option value="other">other</option>
       </select>
     </div>
+
     <div class="ctrl-group">
-      <button class="ctrl-btn danger" title="Clear all" onclick="confirmClear()">✕</button>
+      <span class="ctrl-label">Nodes</span>
+      <button class="ctrl-btn" title="Pulse all" onclick="pulseAll()">✦</button>
+      <button class="ctrl-btn danger" title="Clear all files" onclick="clearAll()">✕</button>
     </div>
+
     <div class="ctrl-group">
       <div id="node-count-display">0 nodes</div>
     </div>
-    <div class="ctrl-group">
-      <div id="save-status">● ready</div>
-    </div>
+
   </div>
 </div>
 
+<!-- VIEWER -->
 <div id="viewer">
   <div id="viewer-box">
     <div id="viewer-tabs">
@@ -411,8 +682,8 @@ html, body {
     <div id="viewer-content">
       <iframe id="viewer-iframe" title="file viewer"></iframe>
       <img id="viewer-img-el" alt="">
-      <div id="viewer-docx"></div>
-      <div id="viewer-xlsx"></div>
+      <div id="viewer-docx" style="display:none;width:100%;height:100%;overflow:auto;background:#111122"></div>
+      <div id="viewer-xlsx" style="display:none;width:100%;height:100%;overflow:auto;background:#080f1a"></div>
       <div id="viewer-msg">
         <div id="viewer-msg-icon">📄</div>
         <div id="viewer-msg-text"></div>
@@ -421,86 +692,276 @@ html, body {
     </div>
     <div id="viewer-footer">
       <span id="viewer-fname"></span>
-      <button class="vf-btn" onclick="if(openTabs.length)closeTab(activeTabIdx,null)">close tab</button>
+      <button class="vf-btn" onclick="closeTab(activeTabIdx,null)">close tab</button>
       <button class="vf-btn dl" onclick="dlCurrent()">⬇ download</button>
     </div>
   </div>
 </div>
 
-<div id="toast"></div>
-
 <script>
-// ═══════════════════════════════════════
-// INDEXEDDB PERSISTENCE
-// ═══════════════════════════════════════
-const DB_NAME = 'DigitalMindDB';
-const DB_VER  = 1;
-const STORE_META = 'fileMeta';   // stores {idx, name, size, type, path}
-const STORE_BLOB = 'fileBlobs';  // stores {idx, blob}
-let db = null;
+// ══════════════════════════════════════════════════════
+//  AUTH + INDEXEDDB PERSISTENCE SYSTEM
+// ══════════════════════════════════════════════════════
 
-function openDB(){
-  return new Promise((res,rej)=>{
+const DB_NAME = 'DigitalMindDB';
+const DB_VER  = 2;
+let db = null;
+let currentUser = null;
+let authMode = 'login';
+let saveTimer = null;
+
+// ── Open IndexedDB ──
+function openDB() {
+  return new Promise((res, rej) => {
     const req = indexedDB.open(DB_NAME, DB_VER);
     req.onupgradeneeded = e => {
       const d = e.target.result;
-      if(!d.objectStoreNames.contains(STORE_META)) d.createObjectStore(STORE_META, {keyPath:'idx'});
-      if(!d.objectStoreNames.contains(STORE_BLOB)) d.createObjectStore(STORE_BLOB, {keyPath:'idx'});
+      if (!d.objectStoreNames.contains('users'))
+        d.createObjectStore('users', { keyPath: 'username' });
+      if (!d.objectStoreNames.contains('files'))
+        d.createObjectStore('files', { keyPath: 'id' }); // id = username+':'+fileIdx
     };
     req.onsuccess = e => { db = e.target.result; res(db); };
-    req.onerror   = e => rej(e);
+    req.onerror   = e => rej(e.target.error);
   });
 }
 
-function dbPut(store, obj){
-  return new Promise((res,rej)=>{
-    const tx = db.transaction(store,'readwrite');
-    const req = tx.objectStore(store).put(obj);
-    req.onsuccess=()=>res();req.onerror=e=>rej(e);
+// ── Auth helpers ──
+function hashPass(pass) {
+  // Simple deterministic hash (no server needed, local-only)
+  let h = 5381;
+  for (let i = 0; i < pass.length; i++) h = ((h << 5) + h) ^ pass.charCodeAt(i);
+  return (h >>> 0).toString(36);
+}
+
+function switchAuthTab(mode) {
+  authMode = mode;
+  document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+  document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+  document.getElementById('auth-confirm-wrap').style.display = mode === 'register' ? 'flex' : 'none';
+  document.getElementById('auth-submit').textContent = mode === 'login' ? 'SIGN IN' : 'CREATE ACCOUNT';
+  document.getElementById('auth-error').textContent = '';
+}
+
+async function handleAuth() {
+  const username = document.getElementById('auth-username').value.trim().toLowerCase();
+  const password = document.getElementById('auth-password').value;
+  const confirm  = document.getElementById('auth-confirm').value;
+  const errEl    = document.getElementById('auth-error');
+
+  if (!username || !password) { errEl.textContent = 'Please fill in all fields.'; return; }
+  if (username.length < 3)    { errEl.textContent = 'Username must be at least 3 characters.'; return; }
+
+  const tx   = db.transaction('users', 'readwrite');
+  const store = tx.objectStore('users');
+
+  if (authMode === 'register') {
+    if (password !== confirm) { errEl.textContent = 'Passwords do not match.'; return; }
+    if (password.length < 6)  { errEl.textContent = 'Password must be at least 6 characters.'; return; }
+    const existing = await idbGet(store, username);
+    if (existing)  { errEl.textContent = 'Username already taken.'; return; }
+    await idbPut(store, { username, hash: hashPass(password), created: Date.now() });
+    errEl.style.color = 'var(--accent3)';
+    errEl.textContent = 'Account created! Signing in…';
+    setTimeout(() => doLogin(username), 600);
+  } else {
+    const user = await idbGet(store, username);
+    if (!user || user.hash !== hashPass(password)) {
+      errEl.style.color = 'var(--pdf)';
+      errEl.textContent = 'Invalid username or password.';
+      return;
+    }
+    doLogin(username);
+  }
+}
+
+function doLogin(username) {
+  currentUser = username;
+  document.getElementById('auth-overlay').classList.add('hidden');
+  document.getElementById('user-badge').textContent = '● ' + username;
+  document.getElementById('user-badge').style.display = '';
+  document.getElementById('btn-logout').style.display = '';
+  loadUserFiles();
+}
+
+function logout() {
+  if (!confirm('Sign out? Unsaved changes are already persisted.')) return;
+  currentUser = null;
+  tree = { name: 'root', children: {}, files: [], parent: null };
+  current = tree; pathStack = [];
+  openTabs = []; activeTabIdx = 0;
+  navTo(null);
+  document.getElementById('user-badge').style.display = 'none';
+  document.getElementById('btn-logout').style.display = 'none';
+  document.getElementById('auth-overlay').classList.remove('hidden');
+  document.getElementById('auth-username').value = '';
+  document.getElementById('auth-password').value = '';
+  document.getElementById('auth-error').textContent = '';
+  document.getElementById('auth-error').style.color = 'var(--pdf)';
+}
+
+// ── IDB promise wrappers ──
+function idbGet(store, key) {
+  return new Promise((res, rej) => { const r = store.get(key); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+}
+function idbPut(store, val) {
+  return new Promise((res, rej) => { const r = store.put(val); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+}
+function idbDelete(store, key) {
+  return new Promise((res, rej) => { const r = store.delete(key); r.onsuccess = () => res(); r.onerror = () => rej(r.error); });
+}
+function idbGetAll(store) {
+  return new Promise((res, rej) => { const r = store.getAll(); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+}
+
+// ── File → Base64 (for IndexedDB storage) ──
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result); // data URL
+    r.onerror = () => rej(r.error);
+    r.readAsDataURL(file);
   });
 }
 
-function dbGetAll(store){
-  return new Promise((res,rej)=>{
-    const tx = db.transaction(store,'readonly');
-    const req = tx.objectStore(store).getAll();
-    req.onsuccess=e=>res(e.target.result);req.onerror=e=>rej(e);
-  });
+// ── Save all files for current user ──
+function setSaveStatus(st, msg) {
+  const el = document.getElementById('save-status');
+  el.className = 'saving'; // reset
+  el.textContent = msg;
+  if (st === 'saving') el.className = 'save-status saving';
+  else if (st === 'saved') el.className = 'save-status saved';
+  else if (st === 'error') el.className = 'save-status error';
+  if (st === 'saved') setTimeout(() => { el.textContent = ''; el.className = ''; }, 2500);
 }
 
-function dbDelete(store, key){
-  return new Promise((res,rej)=>{
-    const tx = db.transaction(store,'readwrite');
-    const req = tx.objectStore(store).delete(key);
-    req.onsuccess=()=>res();req.onerror=e=>rej(e);
+// Collect all files from tree into a flat array with paths
+function collectAllFiles(node, pathParts) {
+  let result = [];
+  node.files.forEach(f => {
+    result.push({ ...f, _path: [...pathParts, f.name] });
   });
+  Object.values(node.children).forEach(child => {
+    result = result.concat(collectAllFiles(child, [...pathParts, child.name]));
+  });
+  return result;
 }
 
-function dbClearAll(){
-  return new Promise((res,rej)=>{
-    const tx = db.transaction([STORE_META,STORE_BLOB],'readwrite');
-    tx.objectStore(STORE_META).clear();
-    tx.objectStore(STORE_BLOB).clear();
-    tx.oncomplete=()=>res();tx.onerror=e=>rej(e);
-  });
+// Debounced auto-save triggered after every file change
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  setSaveStatus('saving', '● saving…');
+  saveTimer = setTimeout(persistAll, 800);
 }
 
-// ═══════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════
-let tree = {name:'root',children:{},files:[],parent:null};
-let current = tree, pathStack = [];
-let filterType = 'all', searchQuery = '';
-const blobUrlCache = {};   // idx -> objectURL (ephemeral, rebuilt each session)
+async function persistAll() {
+  if (!currentUser || !db) return;
+  try {
+    const allFiles = collectAllFiles(tree, []);
+    const tx = db.transaction('files', 'readwrite');
+    const store = tx.objectStore('files');
 
-const TYPE = {
-  folder:{light:'#ffffff',label:'FLD'},
-  pptx:  {light:'#cccccc',label:'PPT'},
-  docx:  {light:'#eeeeee',label:'DOC'},
-  pdf:   {light:'#dddddd',label:'PDF'},
-  xlsx:  {light:'#aaaaaa',label:'XLS'},
-  img:   {light:'#bbbbbb',label:'IMG'},
-  other: {light:'#888888',label:'FILE'}
+    // Delete old entries for this user
+    const existing = await idbGetAll(store);
+    const toDelete = existing.filter(e => e.id.startsWith(currentUser + ':'));
+    await Promise.all(toDelete.map(e => idbDelete(store, e.id)));
+
+    // Write all current files
+    for (const f of allFiles) {
+      // If we have raw binary (new upload), convert; if already a dataURL (loaded from DB), use directly
+      let dataUrl = f._dataUrl;
+      if (!dataUrl && f.url && f.url.startsWith('blob:')) {
+        const resp = await fetch(f.url);
+        const blob = await resp.blob();
+        dataUrl = await new Promise((res, rej) => {
+          const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(blob);
+        });
+      }
+      if (!dataUrl) continue;
+      await idbPut(store, {
+        id: currentUser + ':' + f.idx,
+        username: currentUser,
+        path: f._path,
+        name: f.name,
+        size: f.size,
+        type: f.type,
+        idx: f.idx,
+        dataUrl
+      });
+    }
+    setSaveStatus('saved', '✓ saved');
+  } catch(e) {
+    setSaveStatus('error', '✗ save failed');
+    console.error('Persist error:', e);
+  }
+}
+
+// ── Load saved files for user on login ──
+async function loadUserFiles() {
+  if (!currentUser || !db) return;
+  setSaveStatus('saving', '⏳ loading…');
+  try {
+    const tx    = db.transaction('files', 'readonly');
+    const store = tx.objectStore('files');
+    const all   = await idbGetAll(store);
+    const mine  = all.filter(e => e.username === currentUser);
+
+    mine.forEach(entry => {
+      // Rebuild path in tree
+      const parts = entry.path; // e.g. ['folder', 'subfolder', 'file.pdf']
+      let node = tree;
+      for (let i = 0; i < parts.length - 1; i++) {
+        const p = parts[i];
+        if (!node.children[p]) node.children[p] = { name: p, children: {}, files: [], parent: node };
+        node = node.children[p];
+      }
+      // Create blob URL from stored dataURL
+      const blobUrl = dataUrlToBlobUrl(entry.dataUrl, entry.name);
+      node.files.push({
+        name: entry.name, size: entry.size, type: entry.type,
+        url: blobUrl, _dataUrl: entry.dataUrl, idx: entry.idx
+      });
+    });
+
+    navTo(null);
+    setSaveStatus('saved', `✓ loaded ${mine.length} file${mine.length !== 1 ? 's' : ''}`);
+  } catch(e) {
+    setSaveStatus('error', '✗ load failed');
+    console.error('Load error:', e);
+  }
+}
+
+function dataUrlToBlobUrl(dataUrl, name) {
+  try {
+    const [header, data] = dataUrl.split(',');
+    const mime = header.match(/:(.*?);/)[1];
+    const bin  = atob(data);
+    const arr  = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return URL.createObjectURL(new Blob([arr], { type: mime }));
+  } catch(e) { return ''; }
+}
+
+// ── Keyboard shortcut: Enter on auth form ──
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('auth-overlay').classList.contains('hidden') && e.key === 'Enter') handleAuth();
+});
+
+// ══════════════════════════════════════════════════════
+//  ORIGINAL APP STATE
+// ══════════════════════════════════════════════════════
+let tree={name:'root',children:{},files:[],parent:null};
+let current=tree, pathStack=[];
+let filterType='all', searchQuery='';
+
+const TYPE={
+  folder:{light:'#ffd07a',label:'FLD'},
+  pptx:{light:'#ff8855',label:'PPT'},
+  docx:{light:'#5ca0f0',label:'DOC'},
+  pdf:{light:'#f66151',label:'PDF'},
+  xlsx:{light:'#57e389',label:'XLS'},
+  img:{light:'#c061cb',label:'IMG'},
+  other:{light:'#99aabb',label:'FILE'}
 };
 
 function getExt(n){
@@ -514,28 +975,14 @@ function getExt(n){
 }
 function fmtSize(b){if(b<1024)return b+'B';if(b<1048576)return Math.round(b/1024)+'KB';return(b/1048576).toFixed(1)+'MB';}
 
-// ═══════════════════════════════════════
-// TREE HELPERS
-// ═══════════════════════════════════════
-function insertMeta(meta){
-  // meta = {idx, name, size, type, path}  (path = "folder/sub/file.pdf")
-  const parts = meta.path ? meta.path.split('/') : [meta.name];
-  let node = tree;
-  for(let i=0;i<parts.length-1;i++){
-    const p=parts[i];if(!p)continue;
-    if(!node.children[p]) node.children[p]={name:p,children:{},files:[],parent:node};
-    node=node.children[p];
-  }
-  // avoid duplicates
-  if(!node.files.find(f=>f.idx===meta.idx)){
-    node.files.push({
-      name: parts[parts.length-1],
-      size: meta.size,
-      type: meta.type,
-      url:  blobUrlCache[meta.idx] || '',
-      idx:  meta.idx
-    });
-  }
+function insertFile(file){
+  const parts=file.webkitRelativePath?file.webkitRelativePath.split('/'):['',file.name];
+  let node=tree;
+  for(let i=0;i<parts.length-1;i++){const p=parts[i];if(!p)continue;if(!node.children[p])node.children[p]={name:p,children:{},files:[],parent:node};node=node.children[p];}
+  const idx=Math.random().toString(36).slice(2);
+  const url=URL.createObjectURL(file);
+  node.files.push({name:parts[parts.length-1],size:file.size,type:getExt(file.name),url,idx});
+  scheduleSave();
 }
 
 function countAll(node){
@@ -544,78 +991,6 @@ function countAll(node){
   return{files,size,folders};
 }
 
-// ═══════════════════════════════════════
-// SAVE / LOAD
-// ═══════════════════════════════════════
-function setSaveStatus(s){
-  const el=document.getElementById('save-status');
-  el.className='';el.classList.add(s);
-  if(s==='saving') el.textContent='● saving...';
-  else if(s==='saved') el.textContent='✓ saved';
-  else el.textContent='● ready';
-}
-
-async function saveFile(file, path){
-  setSaveStatus('saving');
-  try {
-    const idx = Math.random().toString(36).slice(2)+Date.now().toString(36);
-    const blob = file;
-    // store blob
-    await dbPut(STORE_BLOB, {idx, blob});
-    // store meta
-    await dbPut(STORE_META, {idx, name:file.name, size:file.size, type:getExt(file.name), path});
-    // create object url for this session
-    const url = URL.createObjectURL(blob);
-    blobUrlCache[idx] = url;
-    insertMeta({idx, name:file.name, size:file.size, type:getExt(file.name), path});
-    // update url in tree node
-    const f = findFileInTree(tree, idx);
-    if(f) f.url = url;
-    setSaveStatus('saved');
-    setTimeout(()=>setSaveStatus('ready'),2000);
-    return idx;
-  } catch(e){
-    setSaveStatus('ready');
-    toast('Save failed: '+e.message);
-  }
-}
-
-async function loadAllFromDB(){
-  setSaveStatus('saving');
-  try {
-    const metas = await dbGetAll(STORE_META);
-    const blobs = await dbGetAll(STORE_BLOB);
-    const blobMap = {};
-    blobs.forEach(b=>blobMap[b.idx]=b.blob);
-    // rebuild blob URLs
-    metas.forEach(m=>{
-      const blob = blobMap[m.idx];
-      if(blob){
-        const url = URL.createObjectURL(blob);
-        blobUrlCache[m.idx] = url;
-      }
-    });
-    // rebuild tree
-    tree = {name:'root',children:{},files:[],parent:null};
-    metas.forEach(m=>insertMeta(m));
-    setSaveStatus('saved');
-    setTimeout(()=>setSaveStatus('ready'),1500);
-    toast(`Loaded ${metas.length} file${metas.length!==1?'s':''} from storage`);
-  } catch(e){
-    setSaveStatus('ready');
-    console.error('Load error',e);
-  }
-}
-
-async function deleteFileFromDB(idx){
-  await dbDelete(STORE_META, idx);
-  await dbDelete(STORE_BLOB, idx);
-  if(blobUrlCache[idx]){ URL.revokeObjectURL(blobUrlCache[idx]); delete blobUrlCache[idx]; }
-}
-
-// ═══════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════
 function navTo(node){
   current=node||tree;pathStack=[];let n=current;
   while(n&&n.parent){pathStack.unshift(n);n=n.parent;}
@@ -623,7 +998,23 @@ function navTo(node){
 }
 function goBack(){if(current.parent)navTo(current.parent);}
 function navToPath(i){navTo(pathStack[i]);}
+function clearAll(){
+  tree={name:'root',children:{},files:[],parent:null};
+  current=tree;pathStack=[];
+  openTabs=[];activeTabIdx=0;
+  navTo(null);
+  // Wipe DB entries for this user
+  if(currentUser&&db){
+    const tx=db.transaction('files','readwrite');
+    const store=tx.objectStore('files');
+    idbGetAll(store).then(all=>{
+      all.filter(e=>e.username===currentUser).forEach(e=>idbDelete(store,e.id));
+    });
+    setSaveStatus('saved','✓ cleared');
+  }
+}
 
+// ── BREADCRUMB ──
 function renderBreadcrumb(){
   const bc=document.getElementById('breadcrumb');
   bc.innerHTML='<span class="bc-item'+(current===tree?' active':'')+'" onclick="navTo(null)">root</span>';
@@ -634,15 +1025,12 @@ function renderBreadcrumb(){
   });
 }
 
-// ═══════════════════════════════════════
-// SIDEBAR
-// ═══════════════════════════════════════
+// ── SIDEBAR ──
 let sidebarOpen=true;
 function toggleSidebar(){
   sidebarOpen=!sidebarOpen;
   document.getElementById('sidebar').classList.toggle('collapsed',!sidebarOpen);
   document.getElementById('btn-sidebar').classList.toggle('active',sidebarOpen);
-  document.getElementById('btn-sidebar-top').classList.toggle('active',sidebarOpen);
   setTimeout(()=>resizeBrain(),260);
 }
 
@@ -651,31 +1039,35 @@ function renderSidebar(){
   document.getElementById('s-folders').textContent=total.folders;
   document.getElementById('s-files').textContent=total.files;
   document.getElementById('s-size').textContent=fmtSize(total.size);
-  const ft=document.getElementById('file-tree');ft.innerHTML='';
-  renderTreeNode(tree,ft,0);
+  const ft=document.getElementById('file-tree');
+  ft.innerHTML='';
+  renderTreeNode(tree, ft, 0);
 }
 
-function renderTreeNode(node,container,depth){
+function renderTreeNode(node, container, depth){
   if(node!==tree){
     const isOpen=pathStack.includes(node)||(current===node);
     const row=document.createElement('div');
     row.className='tree-folder'+(isOpen?' open':'');
     row.style.paddingLeft=(12+depth*10)+'px';
-    row.innerHTML=`<span class="tree-dot" style="background:#fff"></span><span class="tree-name">📁 ${node.name}</span>`;
-    row.onclick=()=>navTo(node);container.appendChild(row);
-    if(!isOpen)return;
+    row.innerHTML=`<span class="tree-dot" style="background:#ffd07a"></span><span class="tree-name">📁 ${node.name}</span>`;
+    row.onclick=()=>navTo(node);
+    container.appendChild(row);
+    if(!isOpen) return;
   }
   const sub=document.createElement('div');
-  if(node!==tree)sub.className='tree-children';
+  if(node!==tree) sub.className='tree-children';
   container.appendChild(sub);
+
   Object.values(node.children).forEach(c=>renderTreeNode(c,sub,depth+1));
   node.files.forEach(f=>{
     if(searchQuery&&!f.name.toLowerCase().includes(searchQuery.toLowerCase()))return;
     const tc=TYPE[f.type];
-    const row=document.createElement('div');row.className='tree-file';
+    const row=document.createElement('div');
+    row.className='tree-file';
     row.style.paddingLeft=(12+(depth+1)*10)+'px';
-    row.innerHTML=`<span class="tree-dot" style="background:${tc.light}88"></span><span class="tree-name">${f.name}</span><span class="tree-size">${fmtSize(f.size)}</span>`;
-    row.ondblclick=()=>openViewer(f.idx,null);
+    row.innerHTML=`<span class="tree-dot" style="background:${tc.light}"></span><span class="tree-name">${f.name}</span><span class="tree-size">${fmtSize(f.size)}</span>`;
+    if(f.type==='img'||f.type==='pdf'||f.type==='docx'||f.type==='pptx'||f.type==='xlsx') row.ondblclick=()=>openViewer(f.idx,null);
     row.onclick=()=>row.classList.toggle('active');
     sub.appendChild(row);
   });
@@ -683,15 +1075,13 @@ function renderTreeNode(node,container,depth){
 
 function searchFiles(q){searchQuery=q;renderSidebar();}
 
-// ═══════════════════════════════════════
-// GRID VIEW
-// ═══════════════════════════════════════
+// ── GRID VIEW ──
 let gridOpen=false;
 function toggleGridView(){
   gridOpen=!gridOpen;
   document.getElementById('grid-overlay').classList.toggle('open',gridOpen);
   document.getElementById('btn-grid').classList.toggle('active',gridOpen);
-  if(gridOpen)renderGridInner();
+  if(gridOpen) renderGridInner();
 }
 
 function renderGridInner(){
@@ -700,50 +1090,55 @@ function renderGridInner(){
   const gi=document.getElementById('grid-inner');gi.innerHTML='';
   const folders=Object.values(current.children);
   const files=current.files.filter(f=>filterType==='all'||f.type===filterType);
-  if(!folders.length&&!files.length){gi.innerHTML='<div class="g-empty">empty — upload a folder to begin</div>';return;}
+  if(!folders.length&&!files.length){gi.innerHTML='<div class="g-empty">no files here — upload a folder to begin</div>';return;}
+
   folders.forEach(f=>{
     const info=countAll(f);
     const card=document.createElement('div');card.className='g-card';
-    card.innerHTML=`<div class="g-icon" style="background:#ffffff11;color:#fff">FLD</div><div class="g-name">${f.name}</div><div class="g-meta">${info.files} files</div>`;
-    card.onclick=()=>{navTo(f);if(gridOpen)renderGridInner();};gi.appendChild(card);
+    card.innerHTML=`<div class="g-icon" style="background:#ffd07a22;color:#ffd07a">FLD</div><div class="g-name">${f.name}</div><div class="g-meta">${info.files} files</div>`;
+    card.onclick=()=>{navTo(f);if(gridOpen)renderGridInner();};
+    gi.appendChild(card);
   });
+
   files.forEach(f=>{
     const tc=TYPE[f.type];
+    const canOpen=true;
     const card=document.createElement('div');card.className='g-card';
     let extra='';
-    if(f.type==='img')extra=`<img class="g-thumb" src="${f.url}" alt="">`;
-    card.innerHTML=`${extra}<div style="display:flex;align-items:center;gap:6px"><div class="g-icon" style="background:${tc.light}11;color:${tc.light};width:28px;height:28px;font-size:9px">${tc.label}</div><div><div class="g-name">${f.name}</div><div class="g-meta">${fmtSize(f.size)}</div></div></div><div class="g-actions"><button class="g-btn open-btn" onclick="openViewer('${f.idx}',event)">open</button><button class="g-btn" onclick="dlFileById('${f.idx}',event)">↓</button><button class="g-btn" onclick="rmFile('${f.idx}',event)">✕</button></div>`;
+    if(f.type==='img') extra=`<img class="g-thumb" src="${f.url}" alt="">`;
+    card.innerHTML=`${extra}<div style="display:flex;align-items:center;gap:6px"><div class="g-icon" style="background:${tc.light}22;color:${tc.light};width:28px;height:28px;font-size:9px">${tc.label}</div><div><div class="g-name">${f.name}</div><div class="g-meta">${fmtSize(f.size)}</div></div></div><div class="g-actions">${canOpen?`<button class="g-btn open-btn" onclick="openViewer('${f.idx}',event)">open</button>`:''}<button class="g-btn" onclick="dlFileById('${f.idx}',event)">↓</button><button class="g-btn" onclick="rmFile('${f.idx}',event)">✕</button></div>`;
     gi.appendChild(card);
   });
 }
 
 function setFilter(v){filterType=v;buildBrain();if(gridOpen)renderGridInner();}
 
-// ═══════════════════════════════════════
-// BRAIN CANVAS
-// ═══════════════════════════════════════
+// ── BRAIN CANVAS ──
 const canvas=document.getElementById('brain-canvas');
 const ctx=canvas.getContext('2d');
 let W,H,brainNodes=[],brainConns=[],t=0,mouse={x:-999,y:-999},hoveredNode=null;
-let brainZoom=1,brainPan={x:0,y:0},speedMult=1;
-let isDragging=false,dragStart={x:0,y:0},panStart={x:0,y:0};
-let clickLock=false;
+let brainZoom=1, brainPan={x:0,y:0};
+let speedMult=1;
+let isDragging=false, dragStart={x:0,y:0}, panStart={x:0,y:0};
 
 document.getElementById('speed-slider').addEventListener('input',e=>speedMult=parseFloat(e.target.value));
 
 function resizeBrain(){
   W=canvas.offsetWidth;H=canvas.offsetHeight;
-  canvas.width=W;canvas.height=H;buildBrain();
+  canvas.width=W;canvas.height=H;
+  buildBrain();
 }
 
 function buildBrain(){
   if(!W||!H)return;
   brainNodes=[];brainConns=[];
+  let items=[];
   const folders=Object.values(current.children);
   let files=current.files;
-  if(filterType!=='all')files=files.filter(f=>f.type===filterType);
-  const items=[...folders,...files];
-  const CX=W/2+brainPan.x,CY=H/2+brainPan.y;
+  if(filterType!=='all') files=files.filter(f=>f.type===filterType);
+  items=[...folders,...files];
+
+  const CX=W/2+brainPan.x, CY=H/2+brainPan.y;
   const bgN=Math.max(40,70-items.length*2);
   for(let i=0;i<bgN;i++){
     const a=Math.random()*Math.PI*2,maxR=brainShape(a,W*0.28*brainZoom),r=Math.sqrt(Math.random())*maxR;
@@ -767,9 +1162,11 @@ function zoomBrain(f){brainZoom=Math.max(0.3,Math.min(3,brainZoom*f));buildBrain
 function resetZoom(){brainZoom=1;brainPan={x:0,y:0};buildBrain();}
 function pulseAll(){brainNodes.forEach(n=>{if(n.item)n.pulse=1;});}
 
+// mouse on canvas
 canvas.addEventListener('mousemove',e=>{
   const rect=canvas.getBoundingClientRect();
-  mouse.x=e.clientX-rect.left;mouse.y=e.clientY-rect.top;
+  mouse.x=(e.clientX-rect.left);
+  mouse.y=(e.clientY-rect.top);
   if(isDragging){
     brainPan.x=panStart.x+(e.clientX-dragStart.x);
     brainPan.y=panStart.y+(e.clientY-dragStart.y);
@@ -779,42 +1176,46 @@ canvas.addEventListener('mousemove',e=>{
   for(const n of brainNodes){if(!n.item)continue;const dx=n.x-mouse.x,dy=n.y-mouse.y;if(Math.sqrt(dx*dx+dy*dy)<14*brainZoom){found=n;break;}}
   if(found&&found!==hoveredNode){
     hoveredNode=found;canvas.style.cursor='pointer';
-    if(found.item.type==='img')showCanvasPrev(found.item,found.x,found.y);
-    else hideCanvasPrev();
-  }else if(!found&&hoveredNode){hideCanvasPrev();canvas.style.cursor='default';}
+    if(found.item.type==='img'||found.item.type==='pdf')showCanvasPrev(found.item,found.x,found.y);
+    else { hideCanvasPrev(); }
+  }else if(!found&&hoveredNode){hideCanvasPrev();canvas.style.cursor=isDragging?'grabbing':'default';}
 });
 canvas.addEventListener('mousedown',e=>{
-  isDragging=true;dragStart={x:e.clientX,y:e.clientY};panStart={...brainPan};
-  canvas.style.cursor='grabbing';clickLock=false;
+  isDragging=true;dragStart={x:e.clientX,y:e.clientY};panStart={...brainPan};canvas.style.cursor='grabbing';
 });
-canvas.addEventListener('mousemove',()=>{
-  if(isDragging){const dx=Math.abs(mouse.x-dragStart.x),dy=Math.abs(mouse.y-dragStart.y);if(dx>4||dy>4)clickLock=true;}
-},true);
 canvas.addEventListener('mouseup',()=>{isDragging=false;canvas.style.cursor='default';});
 canvas.addEventListener('mouseleave',()=>{isDragging=false;hideAllPrev();});
-canvas.addEventListener('wheel',e=>{e.preventDefault();zoomBrain(e.deltaY<0?1.1:0.9);},{passive:false});
+canvas.addEventListener('wheel',e=>{
+  e.preventDefault();
+  zoomBrain(e.deltaY<0?1.1:0.9);
+},{passive:false});
 canvas.addEventListener('click',e=>{
-  if(clickLock)return;
   const rect=canvas.getBoundingClientRect();
   const mx=e.clientX-rect.left,my=e.clientY-rect.top;
   brainNodes.forEach(n=>{
     const dx=n.x-mx,dy=n.y-my;
     if(Math.sqrt(dx*dx+dy*dy)<14*brainZoom&&n.item){
       n.pulse=1;
-      if(n.item.children!==undefined)navTo(n.item);
+      if(n.item.children!==undefined){navTo(n.item);}
       else openViewer(n.item.idx,null);
     }
   });
 });
 
+// hover preview
 let cpTimer=null;
 function showCanvasPrev(f,nx,ny){
   clearTimeout(cpTimer);
   cpTimer=setTimeout(()=>{
     const cpImg=document.getElementById('cp-img');
     document.getElementById('cp-name').textContent=f.name;
-    cpImg.src=f.url;cpImg.style.display='block';
-    document.getElementById('cp-sub').textContent='image  •  click to open';
+    if(f.type==='img'){
+      cpImg.src=f.url;cpImg.style.display='block';
+      document.getElementById('cp-sub').textContent='image  •  click to open';
+    }else if(f.type==='pdf'){
+      cpImg.style.display='none';
+      document.getElementById('cp-sub').textContent='PDF  •  click to open viewer';
+    }
     const cp=document.getElementById('canvas-prev');cp.style.display='flex';
     const br=canvas.getBoundingClientRect();
     let px=nx+14,py=ny-165;
@@ -825,16 +1226,208 @@ function showCanvasPrev(f,nx,ny){
 function hideCanvasPrev(){clearTimeout(cpTimer);document.getElementById('canvas-prev').style.display='none';hoveredNode=null;}
 function hideAllPrev(){hideCanvasPrev();}
 
-// ═══════════════════════════════════════
-// DRAW LOOP
-// ═══════════════════════════════════════
+// ── VIEWER ──
+let openTabs=[],activeTabIdx=0;
+
+function openViewer(idx,e){
+  if(e)e.stopPropagation();
+  const f=findFile(tree,idx);if(!f)return;
+  const ex=openTabs.findIndex(t=>t.idx===idx);
+  if(ex>=0)activeTabIdx=ex;else{openTabs.push(f);activeTabIdx=openTabs.length-1;}
+  showViewerTab(activeTabIdx);
+  document.getElementById('viewer').classList.add('open');
+}
+
+function showViewerTab(i){
+  activeTabIdx=i;const f=openTabs[i];
+  renderViewerTabs();
+  document.getElementById('viewer-fname').textContent=f.name;
+  const iframe=document.getElementById('viewer-iframe');
+  const imgEl=document.getElementById('viewer-img-el');
+  const msg=document.getElementById('viewer-msg');
+  const docxDiv=document.getElementById('viewer-docx');
+  const xlsxDiv=document.getElementById('viewer-xlsx');
+  iframe.style.display='none';imgEl.style.display='none';msg.style.display='none';
+  docxDiv.style.display='none';xlsxDiv.style.display='none';
+  docxDiv.innerHTML='';xlsxDiv.innerHTML='';
+
+  if(f.type==='img'){
+    imgEl.src=f.url;imgEl.style.display='block';
+  } else if(f.type==='pdf'){
+    iframe.src=f.url;iframe.style.display='block';
+  } else if(f.type==='docx'){
+    docxDiv.style.display='block';
+    docxDiv.innerHTML='<div style="color:#7aa8e8;padding:2rem;text-align:center">⏳ rendering document...</div>';
+    renderDocx(f,docxDiv);
+  } else if(f.type==='xlsx'){
+    xlsxDiv.style.display='block';
+    xlsxDiv.innerHTML='<div style="color:#7aa8e8;padding:2rem;text-align:center">⏳ rendering spreadsheet...</div>';
+    renderXlsx(f,xlsxDiv);
+  } else if(f.type==='pptx'){
+    docxDiv.style.display='block';
+    docxDiv.innerHTML='<div style="color:#7aa8e8;padding:2rem;text-align:center">⏳ rendering presentation...</div>';
+    renderPptx(f,docxDiv);
+  } else {
+    document.getElementById('viewer-msg-icon').textContent='📄';
+    document.getElementById('viewer-msg-text').textContent=`"${f.name}" — download to open with the appropriate app.`;
+    msg.style.display='flex';
+  }
+}
+
+async function renderDocx(f, container){
+  try {
+    const mammoth = await loadMammoth();
+    const arrayBuffer = await fileToArrayBuffer(f.url);
+    const result = await mammoth.convertToHtml({arrayBuffer});
+    container.innerHTML = `<div style="background:#fff;color:#111;padding:2.5rem 3rem;max-width:860px;margin:0 auto;font-family:Georgia,serif;font-size:14px;line-height:1.8;min-height:100%">${result.value}</div>`;
+  } catch(e) {
+    container.innerHTML = `<div style="color:#f66151;padding:2rem;text-align:center">❌ Could not render DOCX.<br><small>${e.message}</small></div>`;
+  }
+}
+
+async function renderXlsx(f, container){
+  try {
+    const XLSX = await loadXLSX();
+    const arrayBuffer = await fileToArrayBuffer(f.url);
+    const wb = XLSX.read(arrayBuffer, {type:'array'});
+    let html = `<div style="padding:12px;font-family:'Space Mono',monospace;font-size:12px">`;
+    // Tab buttons for sheets
+    html += `<div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">`;
+    wb.SheetNames.forEach((name,i)=>{
+      html += `<button onclick="showSheet(${i})" id="stab-${i}" style="font-family:'Space Mono',monospace;font-size:11px;padding:4px 12px;border:1px solid #2a4a7a;background:${i===0?'#1a2f52':'transparent'};color:${i===0?'#c4deff':'#7aa8e8'};border-radius:4px;cursor:pointer">${name}</button>`;
+    });
+    html += `</div>`;
+    wb.SheetNames.forEach((name,i)=>{
+      const ws = wb.Sheets[name];
+      const sheetHtml = XLSX.utils.sheet_to_html(ws);
+      html += `<div id="sheet-${i}" style="display:${i===0?'block':'none'};overflow:auto;max-height:calc(100vh - 200px)">${sheetHtml}</div>`;
+    });
+    html += `</div>`;
+    container.innerHTML = html;
+    // style the table
+    container.querySelectorAll('table').forEach(t=>{
+      t.style.cssText='border-collapse:collapse;font-size:12px;color:#ddd;width:100%';
+    });
+    container.querySelectorAll('td,th').forEach(td=>{
+      td.style.cssText='border:1px solid #2a3a5a;padding:4px 8px;white-space:nowrap;background:#0d1525';
+    });
+    container.querySelectorAll('tr:first-child td, th').forEach(th=>{
+      th.style.cssText='border:1px solid #2a3a5a;padding:4px 8px;white-space:nowrap;background:#152035;color:#c4deff;font-weight:bold';
+    });
+    window.showSheet=function(i){
+      wb.SheetNames.forEach((_,j)=>{
+        document.getElementById('sheet-'+j).style.display=j===i?'block':'none';
+        const btn=document.getElementById('stab-'+j);
+        btn.style.background=j===i?'#1a2f52':'transparent';
+        btn.style.color=j===i?'#c4deff':'#7aa8e8';
+      });
+    };
+  } catch(e){
+    container.innerHTML=`<div style="color:#f66151;padding:2rem;text-align:center">❌ Could not render spreadsheet.<br><small>${e.message}</small></div>`;
+  }
+}
+
+async function renderPptx(f, container){
+  // For PPTX, extract text slide by slide using JSZip
+  try {
+    const JSZip = await loadJSZip();
+    const arrayBuffer = await fileToArrayBuffer(f.url);
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const slideFiles = Object.keys(zip.files).filter(n=>n.match(/^ppt\/slides\/slide\d+\.xml$/)).sort((a,b)=>{
+      const na=parseInt(a.match(/\d+/)[0]),nb=parseInt(b.match(/\d+/)[0]);return na-nb;
+    });
+    if(!slideFiles.length){
+      container.innerHTML=`<div style="color:#7aa8e8;padding:2rem;text-align:center">No slides found. Download to view in PowerPoint.</div>`;return;
+    }
+    let html=`<div style="padding:16px;font-family:'Space Mono',monospace">`;
+    html+=`<div style="font-size:11px;color:#5577aa;margin-bottom:12px">${slideFiles.length} slides detected — text content shown below</div>`;
+    for(let i=0;i<slideFiles.length;i++){
+      const xml=await zip.files[slideFiles[i]].async('text');
+      const text=xml.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,800);
+      html+=`<div style="background:#0d1525;border:1px solid #1e3a6e;border-radius:8px;padding:16px;margin-bottom:10px">
+        <div style="font-size:10px;color:#3a6abf;margin-bottom:8px;font-family:'Orbitron',monospace;letter-spacing:1px">SLIDE ${i+1}</div>
+        <div style="font-size:13px;color:#c4deff;line-height:1.7">${text||'(no text content)'}</div>
+      </div>`;
+    }
+    html+=`</div>`;
+    container.innerHTML=html;
+  } catch(e){
+    container.innerHTML=`<div style="color:#f66151;padding:2rem;text-align:center">❌ Could not render PPTX.<br><small>${e.message}</small><br><br><button onclick="dlCurrent()" style="font-family:monospace;padding:6px 16px;background:#1a2f52;border:1px solid #3a6abf;color:#c4deff;border-radius:4px;cursor:pointer">⬇ download to view</button></div>`;
+  }
+}
+
+function fileToArrayBuffer(url){
+  return fetch(url).then(r=>r.arrayBuffer());
+}
+
+function loadMammoth(){
+  return new Promise((res,rej)=>{
+    if(window.mammoth)return res(window.mammoth);
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js';
+    s.onload=()=>res(window.mammoth);s.onerror=rej;
+    document.head.appendChild(s);
+  });
+}
+function loadXLSX(){
+  return new Promise((res,rej)=>{
+    if(window.XLSX)return res(window.XLSX);
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload=()=>res(window.XLSX);s.onerror=rej;
+    document.head.appendChild(s);
+  });
+}
+function loadJSZip(){
+  return new Promise((res,rej)=>{
+    if(window.JSZip)return res(window.JSZip);
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+    s.onload=()=>res(window.JSZip);s.onerror=rej;
+    document.head.appendChild(s);
+  });
+}
+
+function renderViewerTabs(){
+  const te=document.getElementById('viewer-tabs');
+  te.innerHTML='<button id="vtab-back" onclick="closeViewer()">← back to brain</button>';
+  openTabs.forEach((f,i)=>{
+    const tc=TYPE[f.type];
+    const d=document.createElement('div');d.className='vtab'+(i===activeTabIdx?' active':'');
+    d.innerHTML=`<span class="vtab-dot" style="background:${tc.light}"></span><span class="vtab-name">${f.name}</span><span class="vtab-x" onclick="closeTab(${i},event)">✕</span>`;
+    d.onclick=()=>showViewerTab(i);te.appendChild(d);
+  });
+}
+
+function closeTab(i,e){
+  if(e)e.stopPropagation();
+  openTabs.splice(i,1);
+  if(!openTabs.length){closeViewer();return;}
+  activeTabIdx=Math.min(activeTabIdx,openTabs.length-1);
+  showViewerTab(activeTabIdx);
+}
+function closeViewer(){
+  document.getElementById('viewer').classList.remove('open');
+  document.getElementById('viewer-iframe').src='';
+  openTabs=[];activeTabIdx=0;
+}
+function dlCurrent(){const f=openTabs[activeTabIdx];if(f)dlByUrl(f.url,f.name);}
+function dlFileById(idx,e){if(e)e.stopPropagation();const f=findFile(tree,idx);if(f)dlByUrl(f.url,f.name);}
+function dlFile(idx,e){dlFileById(idx,e);}
+function dlByUrl(url,name){const a=document.createElement('a');a.href=url;a.download=name;a.click();}
+function rmFile(idx,e){if(e)e.stopPropagation();removeFile(tree,idx);renderSidebar();buildBrain();if(gridOpen)renderGridInner();scheduleSave();}
+function findFile(node,idx){for(const f of node.files)if(f.idx===idx)return f;for(const c of Object.values(node.children)){const r=findFile(c,idx);if(r)return r;}return null;}
+function removeFile(node,idx){node.files=node.files.filter(f=>f.idx!==idx);Object.values(node.children).forEach(c=>removeFile(c,idx));}
+
+// ── DRAW LOOP ──
 function draw(){
   if(!W||!H){requestAnimationFrame(draw);return;}
   ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='#0a0a0a';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#080820';ctx.fillRect(0,0,W,H);
   t+=0.01*speedMult;
+
   // subtle grid
-  ctx.strokeStyle='#141414';ctx.lineWidth=1;
+  ctx.strokeStyle='#12123a';ctx.lineWidth=1;
   const gs=60;
   for(let x=0;x<W;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
   for(let y=0;y<H;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
@@ -849,10 +1442,17 @@ function draw(){
     const a=brainNodes[c.a],b=brainNodes[c.b];
     const mx2=(a.x+b.x)/2,my2=(a.y+b.y)/2;
     const prox=Math.max(0,1-Math.sqrt((mouse.x-mx2)**2+(mouse.y-my2)**2)/(W*0.18));
-    const pulse=Math.max(a.pulse,b.pulse),fade=1-c.d/(W*0.16*brainZoom),alpha=0.03+prox*0.25+pulse*0.35;
+    const pulse=Math.max(a.pulse,b.pulse),fade=1-c.d/(W*0.16*brainZoom),alpha=0.04+prox*0.3+pulse*0.4;
     ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
     const hasItem=a.item||b.item;
-    ctx.strokeStyle=hasItem?`rgba(200,200,200,${alpha*fade*0.7})`:`rgba(80,80,80,${alpha*fade*0.4})`;
+    if(hasItem){
+      const ta=a.item?TYPE[a.item.children!==undefined?'folder':a.item.type]:null;
+      const tb2=b.item?TYPE[b.item.children!==undefined?'folder':b.item.type]:null;
+      const col=(ta||tb2).light;
+      ctx.strokeStyle=hexAlpha(col,alpha*fade*0.6);
+    }else{
+      ctx.strokeStyle=`rgba(60,80,180,${alpha*fade*0.4})`;
+    }
     ctx.lineWidth=(0.5+prox*1.2+pulse*1.5)*brainZoom;ctx.stroke();
   });
 
@@ -863,241 +1463,70 @@ function draw(){
       const isFolder=n.item.children!==undefined;
       const tc=isFolder?TYPE.folder:TYPE[n.item.type];
       const r0=7*brainZoom+n.pulse*5*brainZoom;
+      // outer glow
       if(prox>0.05||n.pulse>0.02||isHov){
         const gr=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,(isHov?22:16)*brainZoom);
-        const intensity=0.15+prox*0.15+n.pulse*0.15;
-        gr.addColorStop(0,`rgba(255,255,255,${intensity})`);
+        gr.addColorStop(0,hexAlpha(tc.light,0.25+prox*0.2+n.pulse*0.2));
         gr.addColorStop(1,'transparent');
         ctx.beginPath();ctx.arc(n.x,n.y,(isHov?22:16)*brainZoom,0,Math.PI*2);
         ctx.fillStyle=gr;ctx.fill();
       }
-      if(isHov){
+      // ring for previewable
+      if(isHov&&(n.item.type==='img'||n.item.type==='pdf')){
         ctx.beginPath();ctx.arc(n.x,n.y,r0+4,0,Math.PI*2);
-        ctx.strokeStyle='rgba(255,255,255,0.6)';ctx.lineWidth=1.5;ctx.stroke();
+        ctx.strokeStyle=tc.light;ctx.lineWidth=1.5;ctx.stroke();
       }
+      // core
       ctx.beginPath();ctx.arc(n.x,n.y,r0,0,Math.PI*2);
       ctx.fillStyle=tc.light;ctx.fill();
-      ctx.fillStyle='#000';ctx.font=`bold ${Math.max(5,6*brainZoom)}px Arial`;
-      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(tc.label,n.x,n.y);
+      // label
+      ctx.fillStyle='#000000cc';ctx.font=`bold ${Math.max(5,6*brainZoom)}px 'Space Mono'`;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(tc.label,n.x,n.y);
+      // name below
       if(prox>0.25||n.pulse>0.2||isHov){
-        ctx.font=`bold ${Math.max(8,9*brainZoom)}px Arial`;
-        ctx.fillStyle=`rgba(255,255,255,0.8)`;ctx.textBaseline='top';
+        ctx.font=`${Math.max(8,9*brainZoom)}px 'Space Mono'`;
+        ctx.fillStyle=tc.light+'cc';ctx.textBaseline='top';
         const nm=n.item.name.length>14?n.item.name.slice(0,13)+'…':n.item.name;
         ctx.fillText(nm,n.x,n.y+r0+3);
         if(isHov){
-          ctx.font=`${Math.max(7,8*brainZoom)}px Arial`;
-          ctx.fillStyle='rgba(255,255,255,0.5)';
+          ctx.font=`${Math.max(7,8*brainZoom)}px 'Space Mono'`;
+          ctx.fillStyle='#ffffffaa';
           ctx.fillText('click to open',n.x,n.y+r0+14);
         }
       }
     }else{
-      const bright=0.15+0.2*Math.sin(t+n.phase)+n.pulse*0.3+prox*0.2;
+      const bright=0.3+0.35*Math.sin(t+n.phase)+n.pulse*0.4+prox*0.25;
       ctx.beginPath();ctx.arc(n.x,n.y,n.size*(1+prox*0.3+n.pulse*0.5),0,Math.PI*2);
-      ctx.fillStyle=`rgba(180,180,180,${bright})`;ctx.fill();
+      ctx.fillStyle=`rgba(100,160,255,${bright})`;ctx.fill();
     }
   });
 
-  ctx.font="9px Arial";ctx.fillStyle='#2a2a2a';ctx.textAlign='left';ctx.textBaseline='top';
-  ctx.fillText(`ZOOM ${brainZoom.toFixed(1)}x  |  ${brainNodes.filter(n=>n.item).length} NODES  |  ${current===tree?'ROOT':current.name.toUpperCase()}`,10,8);
+  // corner HUD
+  ctx.font="9px 'Orbitron'";ctx.fillStyle='#2a3a6a';ctx.textAlign='left';ctx.textBaseline='top';
+  ctx.fillText(`ZOOM ${brainZoom.toFixed(1)}x  |  NODES ${brainNodes.filter(n=>n.item).length}  |  ${current===tree?'ROOT':current.name.toUpperCase()}`,10,8);
 
   requestAnimationFrame(draw);
 }
 
-// ═══════════════════════════════════════
-// VIEWER
-// ═══════════════════════════════════════
-let openTabs=[],activeTabIdx=0;
-
-function openViewer(idx,e){
-  if(e)e.stopPropagation();
-  const f=findFileInTree(tree,idx);if(!f)return;
-  const ex=openTabs.findIndex(t=>t.idx===idx);
-  if(ex>=0)activeTabIdx=ex;else{openTabs.push(f);activeTabIdx=openTabs.length-1;}
-  showViewerTab(activeTabIdx);
-  document.getElementById('viewer').classList.add('open');
+function hexAlpha(hex,a){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
 }
 
-function showViewerTab(i){
-  activeTabIdx=i;const f=openTabs[i];
-  renderViewerTabs();
-  document.getElementById('viewer-fname').textContent=f.name;
-  const iframe=document.getElementById('viewer-iframe');
-  const imgEl=document.getElementById('viewer-img-el');
-  const docxDiv=document.getElementById('viewer-docx');
-  const xlsxDiv=document.getElementById('viewer-xlsx');
-  const msg=document.getElementById('viewer-msg');
-  iframe.style.display='none';imgEl.style.display='none';
-  docxDiv.style.display='none';xlsxDiv.style.display='none';msg.style.display='none';
-  docxDiv.innerHTML='';xlsxDiv.innerHTML='';
-  if(f.type==='img'){imgEl.src=f.url;imgEl.style.display='block';}
-  else if(f.type==='pdf'){iframe.src=f.url;iframe.style.display='block';}
-  else if(f.type==='docx'){docxDiv.style.display='block';docxDiv.innerHTML='<div style="color:#555;padding:2rem;text-align:center;font-family:Arial">⏳ rendering document...</div>';renderDocx(f,docxDiv);}
-  else if(f.type==='xlsx'){xlsxDiv.style.display='block';xlsxDiv.innerHTML='<div style="color:#888;padding:2rem;text-align:center;font-family:Arial">⏳ rendering spreadsheet...</div>';renderXlsx(f,xlsxDiv);}
-  else if(f.type==='pptx'){docxDiv.style.display='block';docxDiv.innerHTML='<div style="color:#555;padding:2rem;text-align:center;font-family:Arial">⏳ reading slides...</div>';renderPptx(f,docxDiv);}
-  else{document.getElementById('viewer-msg-icon').textContent='📄';document.getElementById('viewer-msg-text').textContent=`"${f.name}" — download to open.`;msg.style.display='flex';}
-}
-
-function renderViewerTabs(){
-  const te=document.getElementById('viewer-tabs');
-  te.innerHTML='<button id="vtab-back" onclick="closeViewer()">← back to brain</button>';
-  openTabs.forEach((f,i)=>{
-    const tc=TYPE[f.type];
-    const d=document.createElement('div');d.className='vtab'+(i===activeTabIdx?' active':'');
-    d.innerHTML=`<span class="vtab-dot" style="background:${tc.light}88"></span><span class="vtab-name">${f.name}</span><span class="vtab-x" onclick="closeTab(${i},event)">✕</span>`;
-    d.onclick=()=>showViewerTab(i);te.appendChild(d);
-  });
-}
-
-function closeTab(i,e){
-  if(e)e.stopPropagation();
-  openTabs.splice(i,1);
-  if(!openTabs.length){closeViewer();return;}
-  activeTabIdx=Math.min(activeTabIdx,openTabs.length-1);showViewerTab(activeTabIdx);
-}
-function closeViewer(){
-  document.getElementById('viewer').classList.remove('open');
-  document.getElementById('viewer-iframe').src='';
-  openTabs=[];activeTabIdx=0;
-}
-function dlCurrent(){const f=openTabs[activeTabIdx];if(f)dlByUrl(f.url,f.name);}
-function dlFileById(idx,e){if(e)e.stopPropagation();const f=findFileInTree(tree,idx);if(f)dlByUrl(f.url,f.name);}
-function dlByUrl(url,name){const a=document.createElement('a');a.href=url;a.download=name;a.click();}
-
-async function rmFile(idx,e){
-  if(e)e.stopPropagation();
-  await deleteFileFromDB(idx);
-  removeFromTree(tree,idx);
-  renderSidebar();buildBrain();if(gridOpen)renderGridInner();
-  toast('File removed');
-}
-
-function findFileInTree(node,idx){
-  for(const f of node.files)if(f.idx===idx)return f;
-  for(const c of Object.values(node.children)){const r=findFileInTree(c,idx);if(r)return r;}
-  return null;
-}
-function removeFromTree(node,idx){
-  node.files=node.files.filter(f=>f.idx!==idx);
-  Object.values(node.children).forEach(c=>removeFromTree(c,idx));
-}
-
-async function confirmClear(){
-  if(!confirm('Clear ALL files from Digital Mind? This cannot be undone.'))return;
-  await dbClearAll();
-  tree={name:'root',children:{},files:[],parent:null};
-  current=tree;pathStack=[];openTabs=[];activeTabIdx=0;
-  navTo(null);toast('All files cleared');
-}
-
-// ═══════════════════════════════════════
-// DOCUMENT RENDERERS
-// ═══════════════════════════════════════
-async function renderDocx(f,container){
-  try{
-    const mammoth=await loadLib('https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js','mammoth');
-    const ab=await fetch(f.url).then(r=>r.arrayBuffer());
-    const result=await mammoth.convertToHtml({arrayBuffer:ab});
-    container.innerHTML=`<div style="background:#fff;color:#111;padding:2.5rem 3rem;max-width:860px;margin:0 auto;font-family:Arial,sans-serif;font-size:14px;line-height:1.8;min-height:100%">${result.value}</div>`;
-  }catch(e){container.innerHTML=`<div style="color:#f66;padding:2rem;text-align:center;font-family:Arial">❌ Cannot render DOCX: ${e.message}</div>`;}
-}
-
-async function renderXlsx(f,container){
-  try{
-    const XLSX=await loadLib('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js','XLSX');
-    const ab=await fetch(f.url).then(r=>r.arrayBuffer());
-    const wb=XLSX.read(ab,{type:'array'});
-    let html=`<div style="padding:12px;font-family:Arial,sans-serif;font-size:12px">`;
-    html+=`<div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">`;
-    wb.SheetNames.forEach((name,i)=>html+=`<button onclick="showSheet(${i})" id="stab-${i}" style="font-family:Arial;font-size:11px;padding:4px 12px;border:1px solid #3a3a3a;background:${i===0?'#333':'transparent'};color:${i===0?'#fff':'#999'};border-radius:4px;cursor:pointer">${name}</button>`);
-    html+=`</div>`;
-    wb.SheetNames.forEach((name,i)=>{
-      const ws=wb.Sheets[name];
-      const sh=XLSX.utils.sheet_to_html(ws);
-      html+=`<div id="sheet-${i}" style="display:${i===0?'block':'none'};overflow:auto;max-height:calc(100vh - 200px)">${sh}</div>`;
-    });
-    html+=`</div>`;
-    container.innerHTML=html;
-    container.querySelectorAll('table').forEach(t=>{t.style.cssText='border-collapse:collapse;font-size:12px;color:#ccc;width:100%';});
-    container.querySelectorAll('td,th').forEach(td=>{td.style.cssText='border:1px solid #2a2a2a;padding:4px 8px;white-space:nowrap;background:#111';});
-    container.querySelectorAll('tr:first-child td').forEach(th=>{th.style.cssText='border:1px solid #333;padding:4px 8px;white-space:nowrap;background:#1e1e1e;color:#fff;font-weight:bold';});
-    window.showSheet=function(i){
-      wb.SheetNames.forEach((_,j)=>{
-        document.getElementById('sheet-'+j).style.display=j===i?'block':'none';
-        const btn=document.getElementById('stab-'+j);
-        if(btn){btn.style.background=j===i?'#333':'transparent';btn.style.color=j===i?'#fff':'#999';}
-      });
-    };
-  }catch(e){container.innerHTML=`<div style="color:#f66;padding:2rem;text-align:center;font-family:Arial">❌ Cannot render spreadsheet: ${e.message}</div>`;}
-}
-
-async function renderPptx(f,container){
-  try{
-    const JSZip=await loadLib('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js','JSZip');
-    const ab=await fetch(f.url).then(r=>r.arrayBuffer());
-    const zip=await JSZip.loadAsync(ab);
-    const slideFiles=Object.keys(zip.files).filter(n=>n.match(/^ppt\/slides\/slide\d+\.xml$/)).sort((a,b)=>parseInt(a.match(/\d+/)[0])-parseInt(b.match(/\d+/)[0]));
-    if(!slideFiles.length){container.innerHTML=`<div style="color:#aaa;padding:2rem;text-align:center;font-family:Arial">No slides found. Download to view in PowerPoint.</div>`;return;}
-    let html=`<div style="padding:16px;font-family:Arial,sans-serif">`;
-    html+=`<div style="font-size:11px;color:#555;margin-bottom:12px">${slideFiles.length} slides</div>`;
-    for(let i=0;i<slideFiles.length;i++){
-      const xml=await zip.files[slideFiles[i]].async('text');
-      const text=xml.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,600);
-      html+=`<div style="background:#111;border:1px solid #2a2a2a;border-radius:8px;padding:16px;margin-bottom:10px"><div style="font-size:10px;color:#555;margin-bottom:8px;letter-spacing:1px">SLIDE ${i+1}</div><div style="font-size:13px;color:#ddd;line-height:1.7">${text||'(no text content)'}</div></div>`;
-    }
-    html+=`</div>`;
-    container.innerHTML=html;
-  }catch(e){container.innerHTML=`<div style="color:#f66;padding:2rem;text-align:center;font-family:Arial">❌ Cannot render PPTX: ${e.message}</div>`;}
-}
-
-function loadLib(url,globalName){
-  return new Promise((res,rej)=>{
-    if(window[globalName])return res(window[globalName]);
-    const s=document.createElement('script');s.src=url;
-    s.onload=()=>res(window[globalName]);s.onerror=rej;
-    document.head.appendChild(s);
-  });
-}
-
-// ═══════════════════════════════════════
-// UPLOAD
-// ═══════════════════════════════════════
-document.getElementById('file-input').addEventListener('change', async e=>{
-  const files=Array.from(e.target.files);
-  e.target.value='';
-  if(!files.length)return;
-  toast(`Saving ${files.length} file${files.length!==1?'s':''}...`);
-  let saved=0;
-  for(const file of files){
-    const path=file.webkitRelativePath||file.name;
-    await saveFile(file,path);
-    saved++;
-    setSaveStatus('saving');
-    document.getElementById('save-status').textContent=`● saving ${saved}/${files.length}`;
-  }
-  setSaveStatus('saved');
-  setTimeout(()=>setSaveStatus('ready'),2000);
-  navTo(current);
-  toast(`✓ ${files.length} file${files.length!==1?'s':''} saved permanently`);
+// ── UPLOAD ──
+document.getElementById('file-input').addEventListener('change',e=>{
+  Array.from(e.target.files).forEach(f=>insertFile(f));
+  e.target.value='';navTo(current);
 });
 
-// ═══════════════════════════════════════
-// TOAST
-// ═══════════════════════════════════════
-let toastTimer=null;
-function toast(msg){
-  const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
-  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2800);
-}
-
-// ═══════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════
+// ── INIT ──
 async function init(){
   await openDB();
-  await loadAllFromDB();
-  resizeBrain();renderSidebar();renderBreadcrumb();draw();
+  resizeBrain();
+  renderSidebar();
+  draw();
   document.getElementById('btn-sidebar').classList.add('active');
-  document.getElementById('btn-sidebar-top').classList.add('active');
 }
 
 window.addEventListener('resize',resizeBrain);
