@@ -523,6 +523,493 @@ html, body {
 #save-status.saving { color: var(--accent); border-color: var(--border2); }
 #save-status.saved { color: var(--accent3); border-color: var(--border2); }
 #save-status.error { color: var(--pdf); border-color: var(--border2); }
+
+/* ── AI ASSISTANT PANEL ── */
+#ai-panel {
+  position: fixed;
+  right: 0; top: 44px; bottom: 56px;
+  width: 360px;
+  background: var(--bg2);
+  border-left: 1px solid var(--border2);
+  display: flex; flex-direction: column;
+  z-index: 50;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: -8px 0 40px #00000055;
+}
+#ai-panel.open { transform: translateX(0); }
+
+#ai-panel-header {
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg3);
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 10px;
+}
+#ai-panel-title {
+  font-family: var(--font-title);
+  font-size: 10px; letter-spacing: 2px;
+  color: var(--accent2);
+  text-shadow: 0 0 12px var(--accent2);
+  flex: 1;
+}
+#ai-panel-close {
+  background: transparent; border: none;
+  color: var(--text3); cursor: pointer;
+  font-size: 16px; line-height: 1;
+  transition: color 0.15s;
+}
+#ai-panel-close:hover { color: var(--text); }
+
+#ai-context-bar {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0; background: var(--bg);
+  font-size: 10px;
+}
+#ai-context-label {
+  color: var(--text3); white-space: nowrap;
+  font-family: var(--font-main);
+}
+#ai-context-chip {
+  background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--accent); border-radius: 20px;
+  padding: 2px 10px; font-size: 10px;
+  font-family: var(--font-main);
+  white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; max-width: 180px;
+}
+#ai-clear-ctx {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text3); font-family: var(--font-main);
+  font-size: 9px; padding: 2px 8px;
+  border-radius: 3px; cursor: pointer;
+  white-space: nowrap; transition: all 0.15s;
+}
+#ai-clear-ctx:hover { border-color: var(--pdf); color: var(--pdf); }
+
+#ai-quick-prompts {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex; flex-wrap: wrap; gap: 5px;
+}
+.ai-qp {
+  font-family: var(--font-main);
+  font-size: 9px; padding: 4px 9px;
+  border: 1px solid var(--border2);
+  background: var(--bg3); color: var(--text2);
+  border-radius: 20px; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+}
+.ai-qp:hover { border-color: var(--accent2); color: var(--accent2); background: #1a0a30; }
+
+#ai-messages {
+  flex: 1; overflow-y: auto;
+  padding: 12px; display: flex;
+  flex-direction: column; gap: 10px;
+}
+#ai-messages::-webkit-scrollbar { width: 4px; }
+#ai-messages::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.ai-msg {
+  display: flex; flex-direction: column; gap: 4px;
+  animation: msgIn 0.25s ease;
+}
+@keyframes msgIn {
+  from { opacity:0; transform: translateY(6px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+.ai-msg-role {
+  font-family: var(--font-title);
+  font-size: 8px; letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.ai-msg.user .ai-msg-role  { color: var(--accent); }
+.ai-msg.ai   .ai-msg-role  { color: var(--accent2); }
+.ai-msg-bubble {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-family: var(--font-main);
+  font-size: 12px; line-height: 1.65;
+  white-space: pre-wrap;
+}
+.ai-msg.user .ai-msg-bubble {
+  background: #0a1f3a; border: 1px solid #1a3a6a;
+  color: var(--text); align-self: flex-end;
+  border-bottom-right-radius: 2px;
+  max-width: 92%;
+}
+.ai-msg.ai .ai-msg-bubble {
+  background: #180a30; border: 1px solid #2a1a50;
+  color: var(--text); align-self: flex-start;
+  border-bottom-left-radius: 2px;
+  max-width: 100%;
+}
+
+/* Streamed text cursor blink */
+.ai-cursor::after {
+  content: '▋';
+  animation: blink 0.7s infinite;
+  color: var(--accent2);
+  font-size: 10px;
+}
+@keyframes blink {
+  0%,100% { opacity:1; } 50% { opacity:0; }
+}
+
+/* Mindmap suggestion chips inside AI messages */
+.ai-node-chips { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
+.ai-node-chip {
+  font-family: var(--font-main); font-size: 9px;
+  padding: 3px 9px; border-radius: 20px;
+  cursor: pointer; border: 1px solid;
+  transition: all 0.15s;
+}
+.ai-node-chip:hover { opacity: 0.75; }
+
+#ai-input-area {
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  display: flex; gap: 8px; flex-shrink: 0;
+  background: var(--bg3);
+}
+#ai-input {
+  flex: 1; background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-main);
+  font-size: 12px; padding: 8px 10px;
+  border-radius: 6px; outline: none;
+  resize: none; min-height: 38px; max-height: 100px;
+  transition: border-color 0.15s;
+  line-height: 1.4;
+}
+#ai-input:focus { border-color: var(--accent2); }
+#ai-send {
+  width: 38px; height: 38px; flex-shrink: 0;
+  background: linear-gradient(135deg, #1a0a30, #0a0a28);
+  border: 1px solid var(--accent2);
+  color: var(--accent2); border-radius: 6px;
+  cursor: pointer; font-size: 16px;
+  transition: all 0.15s; align-self: flex-end;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 14px #bb66ff22;
+}
+#ai-send:hover { background: #280a44; box-shadow: 0 0 22px #bb66ff44; }
+#ai-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* AI toggle button in topbar */
+#btn-ai {
+  font-family: var(--font-main);
+  font-size: 10px; padding: 4px 12px;
+  border: 1px solid var(--accent2);
+  background: transparent; color: var(--accent2);
+  border-radius: 3px; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+  box-shadow: 0 0 10px #bb66ff22;
+}
+#btn-ai:hover, #btn-ai.active { background: #1a0a30; box-shadow: 0 0 18px #bb66ff44; }
+
+/* thinking dots */
+.ai-thinking { display:flex; gap:4px; align-items:center; padding: 4px 0; }
+.ai-thinking span {
+  width:6px; height:6px; border-radius:50%;
+  background: var(--accent2); opacity:0.5;
+  animation: thinkDot 1.2s infinite;
+}
+.ai-thinking span:nth-child(2) { animation-delay:0.2s; }
+.ai-thinking span:nth-child(3) { animation-delay:0.4s; }
+@keyframes thinkDot {
+  0%,100% { opacity:0.2; transform:scale(0.8); }
+  50% { opacity:1; transform:scale(1.2); }
+}
+
+/* ════════════════════════════════════════
+   RESEARCH PANEL
+════════════════════════════════════════ */
+#research-panel {
+  position: fixed;
+  right: 0; top: 44px; bottom: 56px;
+  width: 400px;
+  background: var(--bg2);
+  border-left: 2px solid #1a4a2a;
+  display: flex; flex-direction: column;
+  z-index: 49;
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: -12px 0 60px #000a;
+}
+#research-panel.open { transform: translateX(0); }
+
+/* when both panels open, AI panel shifts left */
+#ai-panel { transition: transform 0.32s cubic-bezier(0.4,0,0.2,1), right 0.32s cubic-bezier(0.4,0,0.2,1); }
+#ai-panel.pushed { right: 400px; }
+
+/* ── Research Header ── */
+#rp-header {
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid #1a4a2a;
+  background: #060f10;
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 10px;
+}
+#rp-title {
+  font-family: var(--font-title);
+  font-size: 10px; letter-spacing: 2px;
+  color: var(--accent3);
+  text-shadow: 0 0 14px var(--accent3);
+  flex: 1;
+}
+#rp-close {
+  background: transparent; border: none;
+  color: var(--text3); cursor: pointer;
+  font-size: 16px; transition: color 0.15s;
+}
+#rp-close:hover { color: var(--text); }
+
+/* ── Research Tabs ── */
+#rp-tabs {
+  display: flex; border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.rp-tab {
+  flex: 1; padding: 8px 4px;
+  background: transparent; border: none;
+  font-family: var(--font-main); font-size: 10px;
+  color: var(--text3); cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+.rp-tab.active { color: var(--accent3); border-bottom-color: var(--accent3); background: #050e08; }
+.rp-tab:hover:not(.active) { color: var(--text2); }
+
+/* ── Search Bar ── */
+#rp-search-bar {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 8px; flex-shrink: 0;
+  background: var(--bg);
+}
+#rp-search-input {
+  flex: 1; background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-main);
+  font-size: 12px; padding: 8px 10px;
+  border-radius: 6px; outline: none;
+  transition: border-color 0.15s;
+}
+#rp-search-input:focus { border-color: var(--accent3); }
+#rp-search-btn {
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #0a2a12, #061810);
+  border: 1px solid var(--accent3);
+  color: var(--accent3); font-family: var(--font-main);
+  font-size: 11px; border-radius: 6px;
+  cursor: pointer; transition: all 0.15s;
+  white-space: nowrap;
+  box-shadow: 0 0 12px #55ffaa22;
+}
+#rp-search-btn:hover { background: #102a18; box-shadow: 0 0 22px #55ffaa44; }
+#rp-search-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Quick topic chips ── */
+#rp-topic-chips {
+  padding: 7px 10px;
+  display: flex; flex-wrap: wrap; gap: 5px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.rp-topic-chip {
+  font-family: var(--font-main); font-size: 9px;
+  padding: 3px 9px; border-radius: 20px;
+  border: 1px solid #1a4a2a; background: #050e08;
+  color: var(--accent3); cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+}
+.rp-topic-chip:hover { border-color: var(--accent3); background: #0a2014; }
+
+/* ── Tab Bodies ── */
+.rp-body { flex: 1; overflow-y: auto; display: none; flex-direction: column; }
+.rp-body.active { display: flex; }
+.rp-body::-webkit-scrollbar { width: 4px; }
+.rp-body::-webkit-scrollbar-thumb { background: #1a4a2a; border-radius: 2px; }
+
+/* ── Research Results ── */
+#rp-results { padding: 12px; display: flex; flex-direction: column; gap: 14px; }
+
+.rp-section-title {
+  font-family: var(--font-title);
+  font-size: 9px; letter-spacing: 2px;
+  color: var(--text3); padding: 0 0 6px;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+}
+
+/* Summary card */
+.rp-summary-card {
+  background: #060f0a; border: 1px solid #1a4a2a;
+  border-radius: 8px; padding: 14px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.rp-summary-topic {
+  font-family: var(--font-title); font-size: 12px;
+  color: var(--accent3); letter-spacing: 1px;
+}
+.rp-summary-text {
+  font-family: var(--font-main); font-size: 12px;
+  line-height: 1.7; color: var(--text);
+}
+.rp-key-concepts {
+  display: flex; flex-wrap: wrap; gap: 5px;
+}
+.rp-concept-tag {
+  font-family: var(--font-main); font-size: 9px;
+  padding: 3px 10px; border-radius: 20px;
+  border: 1px solid var(--accent3); color: var(--accent3);
+  background: #0a2014; cursor: pointer;
+  transition: all 0.15s;
+}
+.rp-concept-tag:hover { background: #142a1c; }
+
+/* Linked files section */
+.rp-linked-files {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.rp-file-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--bg3);
+  cursor: pointer; transition: all 0.15s;
+  position: relative; overflow: hidden;
+}
+.rp-file-link::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--accent3);
+}
+.rp-file-link:hover { border-color: var(--accent3); background: #0a1a0e; }
+.rp-file-link-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.rp-file-link-name {
+  font-family: var(--font-main); font-size: 11px;
+  color: var(--text); flex: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rp-file-link-type {
+  font-family: var(--font-title); font-size: 8px;
+  color: var(--text3); flex-shrink: 0;
+}
+.rp-file-link-relevance {
+  font-size: 9px; color: var(--accent3);
+  font-family: var(--font-main); flex-shrink: 0;
+}
+.rp-file-link-reason {
+  font-size: 10px; color: var(--text3);
+  font-family: var(--font-main);
+  line-height: 1.4; margin-top: 2px;
+  display: block; width: 100%;
+}
+
+/* ── CONCEPT MAP TAB ── */
+#rp-map-canvas-wrap {
+  flex: 1; position: relative; min-height: 300px;
+  background: #04080a;
+}
+#rp-map-canvas {
+  width: 100%; height: 100%;
+  display: block;
+}
+#rp-map-legend {
+  position: absolute; bottom: 8px; left: 8px;
+  font-family: var(--font-main); font-size: 9px;
+  color: var(--text3); line-height: 1.8;
+  pointer-events: none;
+}
+#rp-map-controls {
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  display: flex; gap: 8px; flex-shrink: 0;
+  background: var(--bg3);
+  flex-wrap: wrap;
+}
+.rp-map-btn {
+  font-family: var(--font-main); font-size: 9px;
+  padding: 4px 10px; border-radius: 4px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text3); cursor: pointer; transition: all 0.15s;
+}
+.rp-map-btn:hover { border-color: var(--accent3); color: var(--accent3); }
+.rp-map-btn.active { border-color: var(--accent3); color: var(--accent3); background: #0a1a0e; }
+
+/* ── HISTORY TAB ── */
+#rp-history-list { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.rp-history-item {
+  padding: 10px 12px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--bg3);
+  cursor: pointer; transition: all 0.15s;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.rp-history-item:hover { border-color: var(--accent3); background: #0a1a0e; }
+.rp-history-query {
+  font-family: var(--font-main); font-size: 11px; color: var(--text);
+}
+.rp-history-meta {
+  font-family: var(--font-main); font-size: 9px; color: var(--text3);
+  display: flex; gap: 8px;
+}
+.rp-history-links {
+  display: flex; gap: 4px; flex-wrap: wrap;
+}
+.rp-history-link-chip {
+  font-size: 8px; padding: 1px 6px; border-radius: 10px;
+  border: 1px solid var(--border2); color: var(--text3);
+  font-family: var(--font-main); background: var(--bg);
+}
+
+/* Research toggle button in topbar */
+#btn-research {
+  font-family: var(--font-main);
+  font-size: 10px; padding: 4px 12px;
+  border: 1px solid var(--accent3);
+  background: transparent; color: var(--accent3);
+  border-radius: 3px; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+  box-shadow: 0 0 10px #55ffaa22;
+}
+#btn-research:hover, #btn-research.active { background: #0a2014; box-shadow: 0 0 18px #55ffaa44; }
+
+/* Canvas link highlight pulses */
+@keyframes linkPulse {
+  0% { opacity:0; r:8; }
+  50% { opacity:0.8; }
+  100% { opacity:0; r:24; }
+}
+.link-line-highlight { stroke-dasharray: 6 3; animation: dashFlow 1s linear infinite; }
+@keyframes dashFlow { to { stroke-dashoffset: -18; } }
+
+/* Loading bar */
+#rp-loading {
+  height: 3px; background: var(--bg3);
+  flex-shrink: 0; overflow: hidden;
+}
+#rp-loading-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent3), var(--accent));
+  transition: width 0.4s ease;
+  box-shadow: 0 0 10px var(--accent3);
+}
+
+/* Tooltip for map nodes */
+#rp-map-tooltip {
+  position: absolute; pointer-events: none;
+  background: var(--bg2); border: 1px solid var(--accent3);
+  border-radius: 6px; padding: 6px 10px;
+  font-family: var(--font-main); font-size: 10px;
+  color: var(--text); display: none;
+  max-width: 200px; z-index: 10;
+  box-shadow: 0 4px 20px #000a;
+}
 </style>
 </head>
 <body>
@@ -567,6 +1054,8 @@ html, body {
       <span class="user-badge" id="user-badge" style="display:none"></span>
       <button class="tb-btn" onclick="toggleSidebar()">≡ files</button>
       <button class="tb-btn" onclick="toggleGridView()">⊞ grid</button>
+      <button id="btn-ai" onclick="toggleAI()" title="AI Mind Assistant">⬡ AI ASSIST</button>
+      <button id="btn-research" onclick="toggleResearch()" title="AI Research Panel">🔬 RESEARCH</button>
       <button id="btn-logout" style="display:none" onclick="logout()">sign out</button>
     </div>
   </div>
@@ -670,6 +1159,127 @@ html, body {
       <div id="node-count-display">0 nodes</div>
     </div>
 
+  </div>
+</div>
+
+<!-- AI ASSISTANT PANEL -->
+<div id="ai-panel">
+  <div id="ai-panel-header">
+    <div id="ai-panel-title">⬡ MIND ASSISTANT</div>
+    <button id="ai-panel-close" onclick="toggleAI()">✕</button>
+  </div>
+  <div id="ai-context-bar">
+    <span id="ai-context-label">Context:</span>
+    <span id="ai-context-chip">no file selected</span>
+    <button id="ai-clear-ctx" onclick="clearAIContext()">clear</button>
+  </div>
+  <div id="ai-quick-prompts">
+    <button class="ai-qp" onclick="quickPrompt('Summarize this file and explain its key topics')">📄 Summarize file</button>
+    <button class="ai-qp" onclick="quickPrompt('What are the main concepts I should understand from this?')">🧠 Key concepts</button>
+    <button class="ai-qp" onclick="quickPrompt('Create a mind map structure for this content with main nodes and sub-nodes')">🗺 Mind map</button>
+    <button class="ai-qp" onclick="quickPrompt('What topics in this folder are related to each other?')">🔗 Find connections</button>
+    <button class="ai-qp" onclick="quickPrompt('Explain this topic in simple terms as if I am a beginner')">💡 Simplify</button>
+    <button class="ai-qp" onclick="quickPrompt('What workflow steps would you suggest for working through this content?')">⚡ Workflow steps</button>
+  </div>
+  <div id="ai-messages">
+    <div class="ai-msg ai">
+      <div class="ai-msg-role">MIND ASSISTANT</div>
+      <div class="ai-msg-bubble">Hello! I'm your Digital Mind AI assistant. I can help you:
+
+• Summarize files and folders in your brain map
+• Explain complex topics clearly
+• Build mind map structures for smooth workflow
+• Find connections between your content
+• Break down topics step-by-step
+
+<b>Right-click any node on the brain map</b> to set it as context, or just ask me anything about your files!</div>
+    </div>
+  </div>
+  <div id="ai-input-area">
+    <textarea id="ai-input" placeholder="Ask anything about your files, topics, or workflow…" rows="1" onkeydown="aiInputKey(event)" oninput="autoResize(this)"></textarea>
+    <button id="ai-send" onclick="sendAI()" title="Send (Enter)">↑</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     RESEARCH PANEL
+══════════════════════════════════════ -->
+<div id="research-panel">
+  <div id="rp-header">
+    <div id="rp-title">🔬 RESEARCH LAB</div>
+    <button id="rp-close" onclick="toggleResearch()">✕</button>
+  </div>
+
+  <!-- Loading bar -->
+  <div id="rp-loading"><div id="rp-loading-bar"></div></div>
+
+  <!-- Tabs -->
+  <div id="rp-tabs">
+    <button class="rp-tab active" onclick="switchRpTab('results')">📋 Results</button>
+    <button class="rp-tab" onclick="switchRpTab('map')">🗺 Concept Map</button>
+    <button class="rp-tab" onclick="switchRpTab('links')">🔗 File Links</button>
+    <button class="rp-tab" onclick="switchRpTab('history')">🕐 History</button>
+  </div>
+
+  <!-- Search bar -->
+  <div id="rp-search-bar">
+    <input type="text" id="rp-search-input" placeholder="Research a topic, concept, or question…" onkeydown="rpSearchKey(event)">
+    <button id="rp-search-btn" onclick="runResearch()">🔍 Research</button>
+  </div>
+
+  <!-- Quick topic chips (auto-populated from file names) -->
+  <div id="rp-topic-chips"></div>
+
+  <!-- TAB: Results -->
+  <div class="rp-body active" id="rp-body-results">
+    <div id="rp-results">
+      <div style="padding:2rem;text-align:center;color:var(--text3);font-family:var(--font-main);font-size:12px;line-height:1.8">
+        🔬 Enter a topic above to research it.<br><br>
+        The Research Lab will:<br>
+        • Deep-dive into the concept<br>
+        • Link relevant files from your brain<br>
+        • Build a visual concept map<br>
+        • Suggest learning pathways<br><br>
+        <span style="color:var(--accent3)">Tip: Click any file chip above to auto-research its topic</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Concept Map -->
+  <div class="rp-body" id="rp-body-map">
+    <div id="rp-map-canvas-wrap">
+      <canvas id="rp-map-canvas"></canvas>
+      <div id="rp-map-tooltip"></div>
+      <div id="rp-map-legend">
+        🟢 Main topic &nbsp; 🔵 Sub-concept<br>
+        🟡 Your file &nbsp; ⬜ Linked idea<br>
+        — Edge = relationship
+      </div>
+    </div>
+    <div id="rp-map-controls">
+      <button class="rp-map-btn active" id="rp-map-btn-all" onclick="rpMapFilter('all')">All nodes</button>
+      <button class="rp-map-btn" id="rp-map-btn-files" onclick="rpMapFilter('files')">Files only</button>
+      <button class="rp-map-btn" id="rp-map-btn-concepts" onclick="rpMapFilter('concepts')">Concepts only</button>
+      <button class="rp-map-btn" onclick="rpMapReset()">↺ Reset layout</button>
+    </div>
+  </div>
+
+  <!-- TAB: File Links -->
+  <div class="rp-body" id="rp-body-links">
+    <div id="rp-links-list" style="padding:10px;display:flex;flex-direction:column;gap:8px">
+      <div style="padding:2rem;text-align:center;color:var(--text3);font-family:var(--font-main);font-size:12px">
+        No file links yet. Run a research query to discover connections.
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: History -->
+  <div class="rp-body" id="rp-body-history">
+    <div id="rp-history-list">
+      <div style="padding:2rem;text-align:center;color:var(--text3);font-family:var(--font-main);font-size:12px">
+        No research history yet.
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1520,13 +2130,904 @@ document.getElementById('file-input').addEventListener('change',e=>{
   e.target.value='';navTo(current);
 });
 
-// ── INIT ──
+// ══════════════════════════════════════════════════════
+//  AI ASSISTANT SYSTEM
+// ══════════════════════════════════════════════════════
+
+let aiOpen = false;
+let aiContext = null;      // { name, type, content } — the file/folder in focus
+let aiHistory = [];        // [{role, content}]
+let aiStreaming = false;
+
+function toggleAI() {
+  aiOpen = !aiOpen;
+  document.getElementById('ai-panel').classList.toggle('open', aiOpen);
+  document.getElementById('btn-ai').classList.toggle('active', aiOpen);
+}
+
+function clearAIContext() {
+  aiContext = null;
+  document.getElementById('ai-context-chip').textContent = 'no file selected';
+}
+
+// Called from right-click or node click — sets the AI context to a file
+function setAIContext(file) {
+  aiContext = { name: file.name, type: file.type, url: file.url, idx: file.idx };
+  document.getElementById('ai-context-chip').textContent = file.name;
+  if (!aiOpen) toggleAI();
+  appendAIMessage('ai', `Context set to: **${file.name}**\n\nI can now answer questions about this file. What would you like to know?`);
+}
+
+// Called from right-click on folder node
+function setAIContextFolder(folder) {
+  const info = countAll(folder);
+  const fileNames = collectAllFiles(folder, []).map(f => f.name).slice(0, 20);
+  aiContext = {
+    name: folder.name,
+    type: 'folder',
+    folderSummary: `Folder: "${folder.name}" | ${info.files} files, ${info.folders} subfolders, ${fmtSize(info.size)}\nFiles: ${fileNames.join(', ')}${info.files > 20 ? '…' : ''}`
+  };
+  document.getElementById('ai-context-chip').textContent = '📁 ' + folder.name;
+  if (!aiOpen) toggleAI();
+  appendAIMessage('ai', `Context set to folder: **${folder.name}**\n\n${info.files} files across ${info.folders} subfolders. Ask me to summarize, find connections, suggest a workflow, or build a mind map for this folder!`);
+}
+
+function quickPrompt(text) {
+  document.getElementById('ai-input').value = text;
+  sendAI();
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+function aiInputKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAI(); }
+}
+
+function appendAIMessage(role, text, streaming = false) {
+  const msgs = document.getElementById('ai-messages');
+  const div = document.createElement('div');
+  div.className = `ai-msg ${role}`;
+
+  const roleLabel = document.createElement('div');
+  roleLabel.className = 'ai-msg-role';
+  roleLabel.textContent = role === 'user' ? 'YOU' : 'MIND ASSISTANT';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'ai-msg-bubble' + (streaming ? ' ai-cursor' : '');
+
+  // Render bold markdown-style **text**
+  bubble.innerHTML = renderAIMd(text);
+
+  div.appendChild(roleLabel);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return bubble;
+}
+
+function renderAIMd(text) {
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`(.+?)`/g,'<code style="background:#0a1030;padding:1px 5px;border-radius:3px;font-size:11px">$1</code>')
+    .replace(/^• /gm,'&#8226; ')
+    .replace(/\n/g,'<br>');
+}
+
+function appendThinking() {
+  const msgs = document.getElementById('ai-messages');
+  const div = document.createElement('div');
+  div.className = 'ai-msg ai';
+  div.id = 'ai-thinking';
+  const roleLabel = document.createElement('div');
+  roleLabel.className = 'ai-msg-role';
+  roleLabel.textContent = 'MIND ASSISTANT';
+  const bubble = document.createElement('div');
+  bubble.className = 'ai-msg-bubble';
+  bubble.innerHTML = '<div class="ai-thinking"><span></span><span></span><span></span></div>';
+  div.appendChild(roleLabel);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeThinking() {
+  const el = document.getElementById('ai-thinking');
+  if (el) el.remove();
+}
+
+// Build the system prompt with file/folder context
+function buildSystemPrompt() {
+  const fileList = collectAllFiles(tree, []).map(f => `  • ${f._path ? f._path.join('/') : f.name} (${f.type.toUpperCase()}, ${fmtSize(f.size)})`).join('\n');
+  const total = countAll(tree);
+
+  let ctx = '';
+  if (aiContext) {
+    if (aiContext.type === 'folder') {
+      ctx = `\n\nCURRENT CONTEXT — FOLDER:\n${aiContext.folderSummary}`;
+    } else {
+      ctx = `\n\nCURRENT CONTEXT — FILE:\nName: ${aiContext.name}\nType: ${aiContext.type.toUpperCase()}`;
+    }
+  }
+
+  return `You are the Mind Assistant embedded in "Digital Mind" — a visual brain-map file organiser. Your role is to help the user understand their files, summarise topics, explain concepts, suggest mind map structures, and design smooth workflows for their content.
+
+WORKSPACE OVERVIEW:
+Total files: ${total.files} | Folders: ${total.folders} | Size: ${fmtSize(total.size)}
+${fileList ? `\nFILE TREE:\n${fileList}` : 'No files uploaded yet.'}
+${ctx}
+
+BEHAVIOUR GUIDELINES:
+- Be concise but thorough. Use bullet points and structure for clarity.
+- When asked for a mind map, produce a clear hierarchical structure using indented bullets.
+- When explaining topics, relate them to the user's actual files where possible.
+- Use the file names and folder names to infer the subject matter and domain.
+- Suggest workflow steps that make sense for the content type (e.g., PDFs = read & annotate, XLSX = analyse data, PPTX = presentation prep).
+- Speak like a smart co-pilot, not a generic chatbot. Be practical and actionable.
+- Keep formatting clean — use **bold** for key terms, bullet points for lists.`;
+}
+
+async function sendAI() {
+  if (aiStreaming) return;
+  const input = document.getElementById('ai-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('ai-send').disabled = true;
+  aiStreaming = true;
+
+  // Add user message
+  appendAIMessage('user', text);
+
+  // Add to history
+  aiHistory.push({ role: 'user', content: text });
+
+  // Show thinking
+  appendThinking();
+
+  try {
+    const systemPrompt = buildSystemPrompt();
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: aiHistory.slice(-12) // keep last 12 turns for context
+      })
+    });
+
+    const data = await response.json();
+    removeThinking();
+
+    if (data.error) throw new Error(data.error.message);
+
+    const reply = data.content.map(b => b.type === 'text' ? b.text : '').join('');
+    aiHistory.push({ role: 'assistant', content: reply });
+
+    // Stream-style typewriter render
+    await typewriterAppend(reply);
+
+  } catch (err) {
+    removeThinking();
+    appendAIMessage('ai', `⚠ Error: ${err.message}\n\nPlease check your connection and try again.`);
+  }
+
+  aiStreaming = false;
+  document.getElementById('ai-send').disabled = false;
+}
+
+// Typewriter effect for AI responses
+async function typewriterAppend(fullText) {
+  const msgs = document.getElementById('ai-messages');
+  const div = document.createElement('div');
+  div.className = 'ai-msg ai';
+  const roleLabel = document.createElement('div');
+  roleLabel.className = 'ai-msg-role';
+  roleLabel.textContent = 'MIND ASSISTANT';
+  const bubble = document.createElement('div');
+  bubble.className = 'ai-msg-bubble ai-cursor';
+  div.appendChild(roleLabel);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+
+  // Chunk by words for smooth streaming feel
+  const words = fullText.split(' ');
+  let built = '';
+  for (let i = 0; i < words.length; i++) {
+    built += (i > 0 ? ' ' : '') + words[i];
+    bubble.innerHTML = renderAIMd(built);
+    msgs.scrollTop = msgs.scrollHeight;
+    // Vary speed for natural feel
+    await new Promise(r => setTimeout(r, words[i].length > 8 ? 18 : 10));
+  }
+  bubble.classList.remove('ai-cursor');
+
+  // After full render, add mind-map chips if response contains node suggestions
+  addMindmapChips(bubble, fullText);
+}
+
+// If the AI response mentions file names from the tree, render them as clickable chips
+function addMindmapChips(bubble, text) {
+  const allFiles = collectAllFiles(tree, []);
+  const mentioned = allFiles.filter(f => text.includes(f.name));
+  if (!mentioned.length) return;
+  const chipBar = document.createElement('div');
+  chipBar.className = 'ai-node-chips';
+  mentioned.slice(0, 6).forEach(f => {
+    const tc = TYPE[f.type];
+    const chip = document.createElement('span');
+    chip.className = 'ai-node-chip';
+    chip.style.borderColor = tc.light + '88';
+    chip.style.color = tc.light;
+    chip.style.background = tc.light + '18';
+    chip.textContent = f.name;
+    chip.title = 'Click to open file';
+    chip.onclick = () => openViewer(f.idx, null);
+    chipBar.appendChild(chip);
+  });
+  bubble.appendChild(chipBar);
+}
+
+// ── Right-click on brain canvas to set AI context ──
+(function setupBrainRightClick() {
+  // We attach after canvas is available
+  window.addEventListener('load', () => {
+    const canvas = document.getElementById('brain-canvas');
+    canvas.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      for (const n of brainNodes) {
+        const dx = n.x - mx, dy = n.y - my;
+        if (Math.sqrt(dx*dx + dy*dy) < 16 * brainZoom && n.item) {
+          if (n.item.children !== undefined) setAIContextFolder(n.item);
+          else setAIContext(n.item);
+          return;
+        }
+      }
+    });
+  });
+})();
+
+// ══════════════════════════════════════════════════════
+//  RESEARCH PANEL SYSTEM
+// ══════════════════════════════════════════════════════
+
+let rpOpen = false;
+let rpSearching = false;
+let rpActiveTab = 'results';
+let rpHistory = [];          // [{query, summary, linkedFiles, concepts, timestamp}]
+let rpCurrentResult = null;  // last research result
+let rpMapNodes = [];
+let rpMapEdges = [];
+let rpMapFilter_current = 'all';
+let rpMapAnimFrame = null;
+let rpBrainLinks = [];       // [{fileIdx, reason, relevance}] — drawn on brain canvas
+
+// ── Toggle Panel ──
+function toggleResearch() {
+  rpOpen = !rpOpen;
+  document.getElementById('research-panel').classList.toggle('open', rpOpen);
+  document.getElementById('btn-research').classList.toggle('active', rpOpen);
+  // Push AI panel left if both open
+  const aiPanel = document.getElementById('ai-panel');
+  if (rpOpen && aiOpen) aiPanel.classList.add('pushed');
+  else aiPanel.classList.remove('pushed');
+  if (rpOpen) {
+    refreshTopicChips();
+    setTimeout(() => initRpCanvas(), 100);
+  }
+}
+
+// ── Tab Switching ──
+function switchRpTab(tab) {
+  rpActiveTab = tab;
+  document.querySelectorAll('.rp-tab').forEach((el, i) => {
+    const tabs = ['results','map','links','history'];
+    el.classList.toggle('active', tabs[i] === tab);
+  });
+  document.querySelectorAll('.rp-body').forEach(el => el.classList.remove('active'));
+  document.getElementById(`rp-body-${tab}`).classList.add('active');
+  if (tab === 'map') setTimeout(initRpCanvas, 50);
+}
+
+// ── Auto-populate topic chips from file names ──
+function refreshTopicChips() {
+  const bar = document.getElementById('rp-topic-chips');
+  bar.innerHTML = '';
+  const files = collectAllFiles(tree, []);
+  const topics = new Set();
+  files.forEach(f => {
+    // Extract meaningful words from file name
+    f.name.replace(/\.[^.]+$/, '').split(/[\s_\-]+/).filter(w => w.length > 3).forEach(w => topics.add(w));
+    // Also add folder names
+  });
+  // Add folder names
+  function addFolders(node) {
+    if (node.name !== 'root') topics.add(node.name);
+    Object.values(node.children).forEach(addFolders);
+  }
+  addFolders(tree);
+
+  [...topics].slice(0, 10).forEach(topic => {
+    const chip = document.createElement('button');
+    chip.className = 'rp-topic-chip';
+    chip.textContent = topic;
+    chip.onclick = () => {
+      document.getElementById('rp-search-input').value = topic;
+      runResearch();
+    };
+    bar.appendChild(chip);
+  });
+}
+
+// ── Loading bar animation ──
+function setRpLoading(pct) {
+  document.getElementById('rp-loading-bar').style.width = pct + '%';
+}
+
+// ── Search key handler ──
+function rpSearchKey(e) {
+  if (e.key === 'Enter') runResearch();
+}
+
+// ── Main Research Function ──
+async function runResearch() {
+  const query = document.getElementById('rp-search-input').value.trim();
+  if (!query || rpSearching) return;
+
+  rpSearching = true;
+  document.getElementById('rp-search-btn').disabled = true;
+  document.getElementById('rp-search-btn').textContent = '⏳ Researching…';
+  setRpLoading(15);
+
+  // Build file context
+  const files = collectAllFiles(tree, []);
+  const fileContext = files.map(f => `• ${f.name} (${f.type.toUpperCase()})`).slice(0, 40).join('\n');
+  const total = countAll(tree);
+
+  const systemPrompt = `You are the Research Engine inside "Digital Mind" — an intelligent file brain-map organiser. 
+The user has these files in their workspace:
+${fileContext || 'No files uploaded yet.'}
+Total: ${total.files} files in ${total.folders} folders.
+
+When researching a topic, you MUST respond in this EXACT JSON format only — no other text:
+{
+  "topic": "Clean topic name",
+  "summary": "3-4 sentence clear explanation of the topic",
+  "keyPoints": ["point 1", "point 2", "point 3", "point 4", "point 5"],
+  "concepts": [
+    {"id": "c1", "label": "Main concept", "description": "Brief description", "type": "main"},
+    {"id": "c2", "label": "Sub concept", "description": "Brief description", "type": "sub", "parentId": "c1"},
+    {"id": "c3", "label": "Another sub", "description": "Brief description", "type": "sub", "parentId": "c1"},
+    {"id": "c4", "label": "Related idea", "description": "Brief description", "type": "related"}
+  ],
+  "edges": [
+    {"from": "c1", "to": "c2", "label": "includes"},
+    {"from": "c1", "to": "c3", "label": "relates to"},
+    {"from": "c1", "to": "c4", "label": "connects to"}
+  ],
+  "fileLinks": [
+    {"fileName": "exact_filename_from_list", "relevance": "high|medium|low", "reason": "why this file relates to the topic in 1 sentence"}
+  ],
+  "learningPath": ["Step 1: ...", "Step 2: ...", "Step 3: ..."],
+  "relatedTopics": ["topic1", "topic2", "topic3"]
+}
+Only link files that are genuinely relevant to the query topic. Match file names EXACTLY from the list provided. Include 4-8 concept nodes with logical edges between them.`;
+
+  try {
+    setRpLoading(35);
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: `Research this topic thoroughly: "${query}"` }]
+      })
+    });
+    setRpLoading(70);
+
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const raw = data.content.map(b => b.type === 'text' ? b.text : '').join('');
+    let result;
+    try {
+      const jsonStr = raw.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+      result = JSON.parse(jsonStr);
+    } catch(e) {
+      throw new Error('Could not parse research result. Try rephrasing your query.');
+    }
+
+    setRpLoading(90);
+    rpCurrentResult = result;
+
+    // Match file links to actual files in tree
+    const allFiles = collectAllFiles(tree, []);
+    const resolvedLinks = (result.fileLinks || []).map(link => {
+      const match = allFiles.find(f =>
+        f.name.toLowerCase() === link.fileName.toLowerCase() ||
+        f.name.toLowerCase().includes(link.fileName.toLowerCase().replace(/\.[^.]+$/,''))
+      );
+      return match ? { ...link, file: match } : null;
+    }).filter(Boolean);
+
+    // Store result
+    rpCurrentResult.resolvedLinks = resolvedLinks;
+    rpBrainLinks = resolvedLinks.map(l => ({ fileIdx: l.file.idx, reason: l.reason, relevance: l.relevance }));
+
+    // Save to history
+    rpHistory.unshift({
+      query,
+      topic: result.topic,
+      summary: result.summary,
+      linkedFiles: resolvedLinks,
+      concepts: result.concepts || [],
+      timestamp: Date.now()
+    });
+
+    // Render all tabs
+    renderRpResults(result, resolvedLinks);
+    renderRpLinks(resolvedLinks);
+    buildConceptMap(result.concepts || [], result.edges || [], resolvedLinks);
+    renderRpHistory();
+
+    setRpLoading(100);
+    setTimeout(() => setRpLoading(0), 600);
+
+    // Switch to results tab
+    switchRpTab('results');
+
+  } catch(err) {
+    setRpLoading(0);
+    document.getElementById('rp-results').innerHTML = `
+      <div style="padding:1.5rem;text-align:center;color:var(--pdf);font-family:var(--font-main);font-size:12px">
+        ⚠ Research failed: ${err.message}<br><br>
+        <span style="color:var(--text3)">Please check your connection and try again.</span>
+      </div>`;
+  }
+
+  rpSearching = false;
+  document.getElementById('rp-search-btn').disabled = false;
+  document.getElementById('rp-search-btn').textContent = '🔍 Research';
+}
+
+// ── Render Results Tab ──
+function renderRpResults(result, resolvedLinks) {
+  const container = document.getElementById('rp-results');
+  const tc = TYPE;
+
+  const linkedFilesHtml = resolvedLinks.length ? `
+    <div class="rp-section-title">🔗 Linked Files from Your Brain (${resolvedLinks.length})</div>
+    <div class="rp-linked-files">
+      ${resolvedLinks.map(link => {
+        const ft = tc[link.file.type] || tc.other;
+        return `<div class="rp-file-link" onclick="openViewer('${link.file.idx}', null)">
+          <div class="rp-file-link-dot" style="background:${ft.light}"></div>
+          <div style="flex:1;min-width:0">
+            <div class="rp-file-link-name">${link.file.name}</div>
+            <span class="rp-file-link-reason">${link.reason}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0">
+            <span class="rp-file-link-type">${ft.label}</span>
+            <span class="rp-file-link-relevance">${link.relevance}</span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>` : '<div style="font-size:11px;color:var(--text3);font-family:var(--font-main)">No files in your brain matched this topic yet. Upload relevant files to see connections.</div>';
+
+  const keyPointsHtml = (result.keyPoints || []).map(p =>
+    `<div style="display:flex;gap:8px;align-items:flex-start;font-family:var(--font-main);font-size:12px;line-height:1.6;color:var(--text)">
+      <span style="color:var(--accent3);flex-shrink:0;margin-top:2px">▸</span><span>${p}</span>
+    </div>`
+  ).join('');
+
+  const learningPathHtml = (result.learningPath || []).map((step, i) =>
+    `<div style="display:flex;gap:10px;align-items:flex-start;font-family:var(--font-main);font-size:11px;line-height:1.6;color:var(--text2);padding:6px 0;border-bottom:1px solid var(--border)">
+      <span style="color:var(--accent3);font-family:var(--font-title);font-size:10px;flex-shrink:0;padding-top:2px">${String(i+1).padStart(2,'0')}</span>
+      <span>${step}</span>
+    </div>`
+  ).join('');
+
+  const relatedHtml = (result.relatedTopics || []).map(t =>
+    `<span class="rp-concept-tag" onclick="document.getElementById('rp-search-input').value='${t}';runResearch()">${t}</span>`
+  ).join('');
+
+  container.innerHTML = `
+    <div class="rp-summary-card">
+      <div class="rp-summary-topic">${result.topic || 'Research Result'}</div>
+      <div class="rp-summary-text">${result.summary || ''}</div>
+      <div class="rp-key-concepts">${relatedHtml}</div>
+    </div>
+
+    <div class="rp-section-title">📌 Key Points</div>
+    <div style="display:flex;flex-direction:column;gap:6px">${keyPointsHtml}</div>
+
+    ${linkedFilesHtml}
+
+    <div class="rp-section-title">🎓 Learning Path</div>
+    <div style="display:flex;flex-direction:column">${learningPathHtml || '<div style="color:var(--text3);font-size:11px;font-family:var(--font-main)">No learning path generated.</div>'}</div>
+
+    <div style="height:12px"></div>
+  `;
+}
+
+// ── Render Links Tab ──
+function renderRpLinks(resolvedLinks) {
+  const container = document.getElementById('rp-links-list');
+  if (!resolvedLinks.length) {
+    container.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text3);font-family:var(--font-main);font-size:12px">No files matched this topic. Upload more relevant files.</div>';
+    return;
+  }
+  container.innerHTML = resolvedLinks.map(link => {
+    const ft = TYPE[link.file.type] || TYPE.other;
+    return `
+      <div class="rp-file-link" onclick="openViewer('${link.file.idx}', null)">
+        <div class="rp-file-link-dot" style="background:${ft.light}"></div>
+        <div style="flex:1;min-width:0">
+          <div class="rp-file-link-name">${link.file.name}</div>
+          <span class="rp-file-link-reason">${link.reason}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0">
+          <span class="rp-file-link-type">${ft.label}</span>
+          <span class="rp-file-link-relevance">${link.relevance}</span>
+        </div>
+      </div>
+      <button onclick="sendResearchToAI('${link.file.name}', '${link.reason.replace(/'/g,"\\'")}');setAIContext(collectAllFiles(tree,[]).find(f=>f.idx==='${link.file.idx}')||{name:'${link.file.name}',type:'${link.file.type}',idx:'${link.file.idx}'})"
+        style="font-family:var(--font-main);font-size:9px;padding:3px 10px;border:1px solid var(--border2);background:transparent;color:var(--text3);border-radius:3px;cursor:pointer;margin-top:-4px;align-self:flex-end;transition:all 0.15s"
+        onmouseover="this.style.borderColor='var(--accent2)';this.style.color='var(--accent2)'"
+        onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text3)'">
+        ⬡ Ask AI about this file →
+      </button>`;
+  }).join('');
+}
+
+// ── Send context to AI assistant ──
+function sendResearchToAI(fileName, reason) {
+  if (!aiOpen) toggleAI();
+  setTimeout(() => {
+    document.getElementById('ai-input').value = `I found that "${fileName}" is connected to my research (${reason}). Can you explain how this file fits into the broader concept and what I should focus on?`;
+    sendAI();
+  }, 300);
+}
+
+// ── Render History Tab ──
+function renderRpHistory() {
+  const container = document.getElementById('rp-history-list');
+  if (!rpHistory.length) {
+    container.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text3);font-family:var(--font-main);font-size:12px">No research history yet.</div>';
+    return;
+  }
+  container.innerHTML = rpHistory.map((item, i) => {
+    const ago = Math.round((Date.now() - item.timestamp) / 60000);
+    const timeStr = ago < 1 ? 'just now' : ago < 60 ? `${ago}m ago` : `${Math.round(ago/60)}h ago`;
+    const chips = item.linkedFiles.slice(0,4).map(l =>
+      `<span class="rp-history-link-chip">${l.file.name}</span>`
+    ).join('');
+    return `
+      <div class="rp-history-item" onclick="reloadHistory(${i})">
+        <div class="rp-history-query">${item.query}</div>
+        <div class="rp-history-meta">
+          <span>${timeStr}</span>
+          <span>${item.linkedFiles.length} file links</span>
+          <span>${item.concepts.length} concepts</span>
+        </div>
+        ${chips ? `<div class="rp-history-links">${chips}</div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+function reloadHistory(i) {
+  const h = rpHistory[i];
+  if (!h) return;
+  rpCurrentResult = h;
+  rpBrainLinks = h.linkedFiles.map(l => ({ fileIdx: l.file.idx, reason: l.reason, relevance: l.relevance }));
+  renderRpResults({ topic: h.topic, summary: h.summary, keyPoints: [], learningPath: [], relatedTopics: [] }, h.linkedFiles);
+  renderRpLinks(h.linkedFiles);
+  buildConceptMap(h.concepts, [], h.linkedFiles);
+  switchRpTab('results');
+}
+
+// ══════════════════════════════════════════
+//  CONCEPT MAP CANVAS
+// ══════════════════════════════════════════
+let rpMapData = { nodes: [], edges: [] };
+let rpMapDrag = null;
+let rpMapHover = null;
+let rpMapOffsetX = 0, rpMapOffsetY = 0;
+let rpMapScale = 1;
+
+function buildConceptMap(concepts, edges, fileLinks) {
+  const W = document.getElementById('rp-map-canvas').offsetWidth || 400;
+  const H = document.getElementById('rp-map-canvas').offsetHeight || 300;
+  const cx = W / 2, cy = H / 2;
+
+  // Build nodes
+  const nodes = [];
+
+  // Main concept at center
+  const mainConcept = concepts.find(c => c.type === 'main') || concepts[0];
+  if (mainConcept) {
+    nodes.push({
+      id: mainConcept.id, label: mainConcept.label,
+      description: mainConcept.description,
+      x: cx, y: cy, r: 28,
+      color: '#55ffaa', textColor: '#000', kind: 'main', vx:0, vy:0
+    });
+  }
+
+  // Sub concepts in ring
+  const subConcepts = concepts.filter(c => c.type !== 'main' && c.type === 'sub');
+  subConcepts.forEach((c, i) => {
+    const angle = (i / Math.max(subConcepts.length,1)) * Math.PI * 2 - Math.PI / 2;
+    const radius = 110;
+    nodes.push({
+      id: c.id, label: c.label, description: c.description,
+      x: cx + Math.cos(angle) * radius,
+      y: cy + Math.sin(angle) * radius,
+      r: 20, color: '#55ccff', textColor: '#000', kind: 'sub', vx:0, vy:0
+    });
+  });
+
+  // Related concepts in outer ring
+  const relatedConcepts = concepts.filter(c => c.type === 'related');
+  relatedConcepts.forEach((c, i) => {
+    const angle = (i / Math.max(relatedConcepts.length,1)) * Math.PI * 2;
+    const radius = 175;
+    nodes.push({
+      id: c.id, label: c.label, description: c.description,
+      x: cx + Math.cos(angle) * radius,
+      y: cy + Math.sin(angle) * radius,
+      r: 15, color: '#bb66ff', textColor: '#fff', kind: 'related', vx:0, vy:0
+    });
+  });
+
+  // File nodes — scatter around periphery
+  fileLinks.slice(0,6).forEach((link, i) => {
+    const angle = ((i / Math.max(fileLinks.length,1)) * Math.PI * 2) + 0.3;
+    const radius = 220;
+    const ft = TYPE[link.file.type] || TYPE.other;
+    nodes.push({
+      id: 'file_' + link.file.idx,
+      label: link.file.name.replace(/\.[^.]+$/,'').slice(0,12),
+      description: link.reason,
+      x: Math.max(30, Math.min((W||400)-30, cx + Math.cos(angle) * radius)),
+      y: Math.max(30, Math.min((H||300)-30, cy + Math.sin(angle) * radius)),
+      r: 16, color: ft.light, textColor: '#000',
+      kind: 'file', fileIdx: link.file.idx, vx:0, vy:0
+    });
+    // Add edge from main to file
+    edges.push({ from: mainConcept?.id || 'c1', to: 'file_' + link.file.idx, label: link.relevance });
+  });
+
+  rpMapData = { nodes, edges };
+  rpMapFilter_current = 'all';
+  initRpCanvas();
+}
+
+function initRpCanvas() {
+  const canvas = document.getElementById('rp-map-canvas');
+  const wrap = document.getElementById('rp-map-canvas-wrap');
+  if (!canvas || !wrap) return;
+  canvas.width = wrap.offsetWidth;
+  canvas.height = wrap.offsetHeight;
+
+  if (rpMapAnimFrame) cancelAnimationFrame(rpMapAnimFrame);
+  canvas.onmousedown = rpMapMouseDown;
+  canvas.onmousemove = rpMapMouseMove;
+  canvas.onmouseup = () => rpMapDrag = null;
+  canvas.onmouseleave = () => { rpMapDrag = null; rpMapHover = null; };
+  canvas.ondblclick = rpMapDblClick;
+  drawConceptMap();
+}
+
+function getVisibleNodes() {
+  if (rpMapFilter_current === 'all') return rpMapData.nodes;
+  if (rpMapFilter_current === 'files') return rpMapData.nodes.filter(n => n.kind === 'file');
+  if (rpMapFilter_current === 'concepts') return rpMapData.nodes.filter(n => n.kind !== 'file');
+  return rpMapData.nodes;
+}
+
+function drawConceptMap() {
+  const canvas = document.getElementById('rp-map-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  // Dark bg with subtle grid
+  ctx.fillStyle = '#04080a';
+  ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = '#0a1810'; ctx.lineWidth = 1;
+  for (let x=0; x<W; x+=30) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y=0; y<H; y+=30) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+  const visible = getVisibleNodes();
+  const visibleIds = new Set(visible.map(n => n.id));
+
+  // Draw edges
+  rpMapData.edges.forEach(e => {
+    const from = rpMapData.nodes.find(n => n.id === e.from);
+    const to   = rpMapData.nodes.find(n => n.id === e.to);
+    if (!from || !to || !visibleIds.has(from.id) || !visibleIds.has(to.id)) return;
+
+    const isFile = to.kind === 'file' || from.kind === 'file';
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y); ctx.lineTo(to.x, to.y);
+    ctx.strokeStyle = isFile ? '#55ffaa55' : '#55ccff33';
+    ctx.lineWidth = isFile ? 1.5 : 1;
+    if (isFile) { ctx.setLineDash([5,4]); }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // Edge label
+    if (e.label) {
+      const mx = (from.x+to.x)/2, my = (from.y+to.y)/2;
+      ctx.font = "8px 'Arial Rounded MT Bold', Arial";
+      ctx.fillStyle = '#3a5a45';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(e.label, mx, my);
+    }
+  });
+
+  // Draw nodes
+  visible.forEach(n => {
+    const isHov = rpMapHover === n.id;
+    const glow = isHov ? 22 : 14;
+
+    // Glow
+    const gr = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glow * 2);
+    gr.addColorStop(0, n.color + (isHov ? '55' : '22'));
+    gr.addColorStop(1, 'transparent');
+    ctx.beginPath(); ctx.arc(n.x, n.y, glow*2, 0, Math.PI*2);
+    ctx.fillStyle = gr; ctx.fill();
+
+    // Pulse ring for file nodes
+    if (n.kind === 'file') {
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r + 5, 0, Math.PI*2);
+      ctx.strokeStyle = n.color + '66'; ctx.lineWidth = 1.5; ctx.stroke();
+    }
+
+    // Core circle
+    ctx.beginPath(); ctx.arc(n.x, n.y, isHov ? n.r + 3 : n.r, 0, Math.PI*2);
+    ctx.fillStyle = n.color; ctx.fill();
+    if (n.kind === 'main') {
+      ctx.strokeStyle = '#fff4'; ctx.lineWidth = 2; ctx.stroke();
+    }
+
+    // Label
+    const shortLabel = n.label.length > 12 ? n.label.slice(0,11)+'…' : n.label;
+    ctx.font = `bold ${n.kind==='main'?10:8}px 'Arial Rounded MT Bold', Arial`;
+    ctx.fillStyle = n.textColor === '#000' ? '#000000cc' : '#ffffffcc';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(shortLabel, n.x, n.y);
+
+    // Label below
+    if (isHov || n.kind === 'main') {
+      ctx.font = "9px 'Arial Rounded MT Bold', Arial";
+      ctx.fillStyle = n.color + 'dd';
+      ctx.textBaseline = 'top';
+      ctx.fillText(n.label.length > 16 ? n.label.slice(0,15)+'…' : n.label, n.x, n.y + n.r + 4);
+    }
+  });
+
+  rpMapAnimFrame = requestAnimationFrame(drawConceptMap);
+}
+
+function rpMapMouseDown(e) {
+  const rect = e.target.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const hit = rpMapData.nodes.find(n => Math.hypot(n.x-mx, n.y-my) < n.r + 6);
+  if (hit) rpMapDrag = { node: hit, ox: mx - hit.x, oy: my - hit.y };
+}
+function rpMapMouseMove(e) {
+  const rect = e.target.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  if (rpMapDrag) {
+    rpMapDrag.node.x = mx - rpMapDrag.ox;
+    rpMapDrag.node.y = my - rpMapDrag.oy;
+    return;
+  }
+  const hit = rpMapData.nodes.find(n => Math.hypot(n.x-mx, n.y-my) < n.r + 6);
+  rpMapHover = hit ? hit.id : null;
+  // Show tooltip
+  const tt = document.getElementById('rp-map-tooltip');
+  if (hit && hit.description) {
+    tt.style.display = 'block';
+    tt.style.left = (mx + 12) + 'px';
+    tt.style.top = (my - 10) + 'px';
+    tt.textContent = hit.description;
+  } else {
+    tt.style.display = 'none';
+  }
+}
+function rpMapDblClick(e) {
+  const rect = e.target.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const hit = rpMapData.nodes.find(n => Math.hypot(n.x-mx, n.y-my) < n.r + 6);
+  if (hit && hit.kind === 'file' && hit.fileIdx) {
+    openViewer(hit.fileIdx, null);
+  } else if (hit) {
+    document.getElementById('rp-search-input').value = hit.label;
+    runResearch();
+  }
+}
+function rpMapFilter(f) {
+  rpMapFilter_current = f;
+  document.querySelectorAll('.rp-map-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('rp-map-btn-' + (f==='all'?'all':f==='files'?'files':'concepts')).classList.add('active');
+}
+function rpMapReset() {
+  const W = document.getElementById('rp-map-canvas').width;
+  const H = document.getElementById('rp-map-canvas').height;
+  if (rpCurrentResult) buildConceptMap(rpCurrentResult.concepts||[], rpCurrentResult.edges||[], rpCurrentResult.resolvedLinks||[]);
+}
+
+// ── Draw Research Links on Main Brain Canvas ──
+// Overlay glowing lines from linked files on the brain map
+function drawResearchOverlay(ctx) {
+  if (!rpBrainLinks.length || !rpOpen) return;
+  rpBrainLinks.forEach(link => {
+    const node = brainNodes.find(n => n.item && n.item.idx === link.fileIdx);
+    if (!node) return;
+    const col = link.relevance === 'high' ? '#55ffaa' : link.relevance === 'medium' ? '#55ccff' : '#bb66ff';
+    // Pulsing ring
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, 20 * brainZoom + Math.sin(t*3)*4, 0, Math.PI*2);
+    ctx.strokeStyle = col + '88'; ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.restore();
+    // Label
+    ctx.save();
+    ctx.font = `8px 'Orbitron'`;
+    ctx.fillStyle = col + 'cc';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.fillText('LINKED', node.x, node.y - 20 * brainZoom - 4);
+    ctx.restore();
+  });
+}
+
+// Patch into the draw loop (call after brain draw)
+const _origDraw = draw;
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
 async function init(){
   await openDB();
   resizeBrain();
   renderSidebar();
   draw();
   document.getElementById('btn-sidebar').classList.add('active');
+
+  // Patch draw loop to include research overlay after each frame
+  const origRAF = window.requestAnimationFrame.bind(window);
+  const brainCanvas = document.getElementById('brain-canvas');
+  const _brainCtx = brainCanvas.getContext('2d');
+  // Hook: after every draw frame, paint research links on top
+  const _patchedDraw = () => {
+    drawResearchOverlay(_brainCtx);
+  };
+  const _observer = new MutationObserver(() => {});
+  // Use a secondary rAF loop for the overlay (lighter approach)
+  (function overlayLoop() {
+    drawResearchOverlay(_brainCtx);
+    requestAnimationFrame(overlayLoop);
+  })();
 }
 
 window.addEventListener('resize',resizeBrain);
