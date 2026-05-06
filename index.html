@@ -1010,9 +1010,77 @@ html, body {
   max-width: 200px; z-index: 10;
   box-shadow: 0 4px 20px #000a;
 }
+/* ── API KEY MODAL ── */
+#apikey-modal {
+  position: fixed; inset: 0; z-index: 99999;
+  background: #04040eee;
+  display: flex; align-items: center; justify-content: center;
+}
+#apikey-modal.hidden { display: none; }
+#apikey-box {
+  background: var(--bg2); border: 1px solid #1a4a2a;
+  border-radius: 14px; padding: 36px 40px;
+  width: 420px; display: flex; flex-direction: column; gap: 18px;
+  box-shadow: 0 0 80px #000a, 0 0 40px #55ffaa18;
+}
+#apikey-title {
+  font-family: var(--font-title); font-size: 14px;
+  color: var(--accent3); letter-spacing: 3px;
+  text-align: center; text-shadow: 0 0 18px var(--accent3);
+}
+#apikey-desc {
+  font-family: var(--font-main); font-size: 12px;
+  color: var(--text2); line-height: 1.7; text-align: center;
+}
+#apikey-desc a { color: var(--accent); text-decoration: none; }
+#apikey-desc a:hover { text-decoration: underline; }
+#apikey-input {
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-mono);
+  font-size: 12px; padding: 10px 12px; border-radius: 6px;
+  outline: none; transition: border-color 0.15s; letter-spacing: 1px;
+}
+#apikey-input:focus { border-color: var(--accent3); }
+#apikey-input::placeholder { color: var(--text3); letter-spacing: 0; }
+#apikey-save {
+  width: 100%; padding: 12px;
+  background: linear-gradient(135deg, #0a2a12, #061810);
+  border: 1px solid var(--accent3); color: var(--accent3);
+  font-family: var(--font-main); font-size: 13px;
+  border-radius: 6px; cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 0 18px #55ffaa22;
+}
+#apikey-save:hover { background: #102a18; box-shadow: 0 0 30px #55ffaa44; }
+#apikey-skip {
+  background: transparent; border: none; color: var(--text3);
+  font-family: var(--font-main); font-size: 11px;
+  cursor: pointer; text-align: center;
+  text-decoration: underline; transition: color 0.15s;
+}
+#apikey-skip:hover { color: var(--text2); }
+#apikey-error {
+  font-size: 11px; color: var(--pdf);
+  text-align: center; font-family: var(--font-main); min-height: 14px;
+}
+#apikey-status-bar {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-main); font-size: 10px;
+  color: var(--text3); padding: 3px 0;
+}
+#apikey-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--text3); flex-shrink: 0; transition: background 0.3s;
+}
+#apikey-dot.ok { background: var(--accent3); box-shadow: 0 0 8px var(--accent3); }
+#apikey-dot.err { background: var(--pdf); }
+#apikey-change-btn {
+  font-family: var(--font-main); font-size: 9px; padding: 3px 9px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text3); border-radius: 3px; cursor: pointer;
+  transition: all 0.15s; margin-left: auto;
+}
+#apikey-change-btn:hover { border-color: var(--accent3); color: var(--accent3); }
 </style>
-</head>
-<body>
 
 <!-- AUTH OVERLAY -->
 <div id="auth-overlay">
